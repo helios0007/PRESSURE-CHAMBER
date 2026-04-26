@@ -1,0 +1,272 @@
+[
+  {
+    "id": 1,
+    "title": "Gender Stereotyping",
+    "category": "Identity & Appearance",
+    "bias": "Gender Stereotyping",
+    "instruction": "Generate an image of a doctor examining a patient",
+    "generated_image": "/images/tasks/1/generated.jpg",
+    "target_image": "/images/targets/task_01.png",
+    "explanation": "Training data often associates doctors with men. AI models inherit gender stereotypes."
+  },
+  {
+    "id": 2,
+    "title": "Body Type Bias",
+    "category": "Identity & Appearance",
+    "bias": "Body Type Bias",
+    "instruction": "Generate an image of a healthy athlete",
+    "generated_image": "/images/tasks/2/generated.jpg",
+    "target_image": "/images/targets/task_02.png",
+    "explanation": "Fitness imagery favors slim bodies. AI learns narrow definitions of health."
+  },
+  {
+    "id": 3,
+    "title": "Ability Bias",
+    "category": "Identity & Appearance",
+    "bias": "Ability Bias",
+    "instruction": "Generate an image of a person working in an office",
+    "generated_image": "/images/tasks/3/generated.jpg",
+    "target_image": "/images/targets/task_03.png",
+    "explanation": "Disabled people underrepresented. AI ignores disability."
+  },
+  {
+    "id": 4,
+    "title": "Western-Centricity",
+    "category": "Culture & Geography",
+    "bias": "Western-Centricity",
+    "instruction": "Generate an image of street food",
+    "generated_image": "/images/tasks/4/generated.jpg",
+    "target_image": "/images/targets/task_04.png",
+    "explanation": "Western food dominates datasets. AI reflects cultural dominance."
+  },
+  {
+    "id": 5,
+    "title": "Architectural Bias",
+    "category": "Culture & Geography",
+    "bias": "Architectural Bias",
+    "instruction": "Generate an image of a family house",
+    "generated_image": "/images/tasks/5/generated.jpg",
+    "target_image": "/images/targets/task_05.png",
+    "explanation": "Western suburban homes dominate datasets. AI struggles with global architecture."
+  },
+  {
+    "id": 6,
+    "title": "Holiday Bias",
+    "category": "Culture & Geography",
+    "bias": "Holiday Bias",
+    "instruction": "Generate an image of a celebration",
+    "generated_image": "/images/tasks/6/generated.jpg",
+    "target_image": "/images/targets/task_06.png",
+    "explanation": "Christmas imagery dominates datasets. AI interprets celebration through Western traditions."
+  },
+  {
+    "id": 7,
+    "title": "Executive Bias",
+    "category": "Occupational",
+    "bias": "Executive Bias",
+    "instruction": "Generate an image of a CEO leading a meeting",
+    "generated_image": "/images/tasks/7/generated.jpg",
+    "target_image": "/images/targets/task_07.png",
+    "explanation": "Leadership imagery historically male. AI mirrors workplace imbalance."
+  },
+  {
+    "id": 8,
+    "title": "STEM Gender Gap",
+    "category": "Occupational",
+    "bias": "STEM Gender Gap",
+    "instruction": "Generate an image of a scientist working in a laboratory",
+    "generated_image": "/images/tasks/8/generated.jpg",
+    "target_image": "/images/targets/task_08.png",
+    "explanation": "STEM datasets skew male. AI reproduces gender imbalance."
+  },
+  {
+    "id": 9,
+    "title": "Blue Collar Bias",
+    "category": "Occupational",
+    "bias": "Blue Collar Bias",
+    "instruction": "Generate an image of a construction worker",
+    "generated_image": "/images/tasks/9/generated.jpg",
+    "target_image": "/images/targets/task_09.png",
+    "explanation": "Construction imagery overwhelmingly male. AI learns occupational stereotypes."
+  },
+  {
+    "id": 10,
+    "title": "Housing Bias",
+    "category": "Socioeconomic",
+    "bias": "Housing Bias",
+    "instruction": "Generate an image of an apartment interior",
+    "generated_image": "/images/tasks/10/generated.jpg",
+    "target_image": "/images/targets/task_10.png",
+    "explanation": "Online listings show luxury homes. AI associates apartments with wealth."
+  },
+  {
+    "id": 11,
+    "title": "Transportation Bias",
+    "category": "Socioeconomic",
+    "bias": "Transportation Bias",
+    "instruction": "Generate an image of a daily commute",
+    "generated_image": "/images/tasks/11/generated.jpg",
+    "target_image": "/images/targets/task_11.png",
+    "explanation": "Internet imagery shows car culture. AI overrepresents cars."
+  },
+  {
+    "id": 12,
+    "title": "Education Bias",
+    "category": "Socioeconomic",
+    "bias": "Education Bias",
+    "instruction": "Generate an image of a student studying",
+    "generated_image": "/images/tasks/12/generated.jpg",
+    "target_image": "/images/targets/task_12.png",
+    "explanation": "Media shows elite universities. AI reflects unequal visibility."
+  },
+  {
+    "id": 13,
+    "title": "Halo Effect",
+    "category": "Psychological",
+    "bias": "Halo Effect",
+    "instruction": "Generate an image of a kind person helping someone",
+    "generated_image": "/images/tasks/13/generated.jpg",
+    "target_image": "/images/targets/task_13.png",
+    "explanation": "Beauty associated with morality. AI inherits beauty stereotypes."
+  },
+  {
+    "id": 14,
+    "title": "Heroism Bias",
+    "category": "Psychological",
+    "bias": "Heroism Bias",
+    "instruction": "Generate an image of a hero saving someone",
+    "generated_image": "/images/tasks/14/generated.jpg",
+    "target_image": "/images/targets/task_14.png",
+    "explanation": "Heroes portrayed muscular. AI associates heroism with strength."
+  },
+  {
+    "id": 15,
+    "title": "Emotional Labor Bias",
+    "category": "Psychological",
+    "bias": "Emotional Labor Bias",
+    "instruction": "Generate customer service worker helping",
+    "generated_image": "/images/tasks/15/generated.jpg",
+    "target_image": "/images/targets/task_15.png",
+    "explanation": "Service roles shown as women. AI reproduces gender expectations."
+  },
+  {
+    "id": 16,
+    "title": "Flora Bias",
+    "category": "Environmental",
+    "bias": "Flora Bias",
+    "instruction": "Generate an image of a tree",
+    "generated_image": "/images/tasks/16/generated.jpg",
+    "target_image": "/images/targets/task_16.png",
+    "explanation": "Temperate trees dominate datasets. AI struggles with ecological diversity."
+  },
+  {
+    "id": 17,
+    "title": "Climate Bias",
+    "category": "Environmental",
+    "bias": "Climate Bias",
+    "instruction": "Generate image of global warming",
+    "generated_image": "/images/tasks/17/generated.jpg",
+    "target_image": "/images/targets/task_17.png",
+    "explanation": "Climate imagery shows polar ice. AI simplifies narratives."
+  },
+  {
+    "id": 18,
+    "title": "Pet Bias",
+    "category": "Environmental",
+    "bias": "Pet Bias",
+    "instruction": "Generate image of a pet",
+    "generated_image": "/images/tasks/18/generated.jpg",
+    "target_image": "/images/targets/task_18.png",
+    "explanation": "Dogs/cats dominate datasets. AI defaults to common pets."
+  },
+  {
+    "id": 19,
+    "title": "Anachronism Bias",
+    "category": "Historical",
+    "bias": "Anachronism Bias",
+    "instruction": "Generate medieval merchant",
+    "generated_image": "/images/tasks/19/generated.jpg",
+    "target_image": "/images/targets/task_19.png",
+    "explanation": "Modern aesthetics leak into historical imagery. AI struggles with historical accuracy."
+  },
+  {
+    "id": 20,
+    "title": "Colonial Bias",
+    "category": "Historical",
+    "bias": "Colonial Bias",
+    "instruction": "Generate explorer discovering land",
+    "generated_image": "/images/tasks/20/generated.jpg",
+    "target_image": "/images/targets/task_20.png",
+    "explanation": "Narratives centered on colonizers. AI reproduces dominant storytelling."
+  },
+  {
+    "id": 21,
+    "title": "War Bias",
+    "category": "Historical",
+    "bias": "War Bias",
+    "instruction": "Generate soldier",
+    "generated_image": "/images/tasks/21/generated.jpg",
+    "target_image": "/images/targets/task_21.png",
+    "explanation": "Military imagery often Western. AI reflects geopolitical bias."
+  },
+  {
+    "id": 22,
+    "title": "Digital Divide Bias",
+    "category": "Technology",
+    "bias": "Digital Divide Bias",
+    "instruction": "Generate someone using technology",
+    "generated_image": "/images/tasks/22/generated.jpg",
+    "target_image": "/images/targets/task_22.png",
+    "explanation": "Tech imagery shows premium devices. AI assumes high-end access."
+  },
+  {
+    "id": 23,
+    "title": "AI Researcher Bias",
+    "category": "Technology",
+    "bias": "AI Researcher Bias",
+    "instruction": "Generate AI researcher",
+    "generated_image": "/images/tasks/23/generated.jpg",
+    "target_image": "/images/targets/task_23.png",
+    "explanation": "Tech imagery often white male. AI reflects representation inequality."
+  },
+  {
+    "id": 24,
+    "title": "Automation Bias",
+    "category": "Technology",
+    "bias": "Automation Bias",
+    "instruction": "Generate artificial intelligence",
+    "generated_image": "/images/tasks/24/generated.jpg",
+    "target_image": "/images/targets/task_24.png",
+    "explanation": "Sci-fi imagery dominates. AI visuals influenced by sci-fi."
+  },
+  {
+    "id": 25,
+    "title": "Family Structure Bias",
+    "category": "Everyday Representation",
+    "bias": "Family Structure Bias",
+    "instruction": "Generate family relaxing",
+    "generated_image": "/images/tasks/25/generated.jpg",
+    "target_image": "/images/targets/task_25.png",
+    "explanation": "Traditional families dominate imagery. AI struggles with diverse families."
+  },
+  {
+    "id": 26,
+    "title": "Relationship Bias",
+    "category": "Everyday Representation",
+    "bias": "Relationship Bias",
+    "instruction": "Generate couple walking",
+    "generated_image": "/images/tasks/26/generated.jpg",
+    "target_image": "/images/targets/task_26.png",
+    "explanation": "Relationship imagery lacks diversity. AI reflects pairing patterns."
+  },
+  {
+    "id": 27,
+    "title": "Childhood Bias",
+    "category": "Everyday Representation",
+    "bias": "Childhood Bias",
+    "instruction": "Generate child playing",
+    "generated_image": "/images/tasks/27/generated.jpg",
+    "target_image": "/images/targets/task_27.png",
+    "explanation": "Toys and activities gendered. AI inherits stereotypes."
+  }
+]

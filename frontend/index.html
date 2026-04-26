@@ -1,0 +1,157 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pressure Chamber</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-gradient"></div>
+  <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
+  <div id="background-blobs" aria-hidden="true">
+    <div class="blob blob-main" data-size="900"></div>
+    <div class="blob blob-1 blob-floating" data-size="760"></div>
+    <div class="blob blob-2 blob-floating" data-size="680"></div>
+    <div class="blob blob-3 blob-floating" data-size="520"></div>
+    <div class="blob blob-4 blob-floating" data-size="820"></div>
+    <div class="blob blob-5 blob-floating" data-size="620"></div>
+  </div>
+  <div class="bg-grain"></div>
+
+  <div id="loading-overlay" class="loading-overlay" aria-hidden="true">
+    <div class="panel loading-panel">
+      <p>AI is thinking<span class="thinking-dots" aria-hidden="true"></span></p>
+      <div class="thinking-bar"><span></span></div>
+    </div>
+  </div>
+
+  <main id="app" aria-live="polite">
+    <section class="screen active" id="screen-start">
+      <div class="container">
+        <div class="panel">
+          <h1 data-t="title">Pressure Chamber</h1>
+          <p class="subtitle" data-t="subtitle">AI Bias Experiment</p>
+          <label for="username" data-t="username">Username</label>
+          <input id="username" aria-label="Username" maxlength="24" autocomplete="off" />
+          <button id="start-btn" class="button btn" data-t="start">Start</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-language">
+      <div class="container">
+        <div class="panel">
+          <div class="panel-top">
+            <button id="back-language" class="button btn ghost">Back</button>
+            <div class="progress-indicator" data-progress>○ ○ ○</div>
+          </div>
+          <h2 data-t="selectLanguage">Select Language</h2>
+          <div class="lang-grid">
+            <button class="button btn lang-btn" data-lang="en">English</button>
+            <button class="button btn lang-btn" data-lang="es">Español</button>
+            <button class="button btn lang-btn" data-lang="ca">Català</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-hub">
+      <div class="container">
+        <div class="panel">
+          <div class="panel-top">
+            <button id="back-hub" class="button btn ghost">Back</button>
+            <div class="progress-indicator" data-progress>○ ○ ○</div>
+          </div>
+          <h2 data-t="taskHub">Task Hub</h2>
+          <p data-t="chooseTask">Choose a task</p>
+          <div id="task-grid" class="task-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-prompt">
+      <div class="container">
+        <div class="panel">
+          <div class="panel-top">
+            <button id="back-prompt" class="button btn ghost">Back</button>
+            <div class="progress-indicator" data-progress>○ ○ ○</div>
+          </div>
+          <h2 id="prompt-title"></h2>
+          <p id="prompt-task-id"></p>
+          <p id="prompt-instruction"></p>
+          <textarea id="prompt-input" maxlength="200" aria-label="Prompt input"></textarea>
+          <div class="row">
+            <small id="char-counter">0/200</small>
+            <button id="generate-btn" class="button btn" data-t="generate">Generate</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-result">
+      <div class="container">
+        <div class="panel">
+          <div class="panel-top">
+            <button id="back-result" class="button btn ghost">Back</button>
+            <div class="progress-indicator" data-progress>○ ○ ○</div>
+          </div>
+          <h2 data-t="result">Result</h2>
+          <p id="result-task-id"></p>
+          <p id="result-score" class="score score-mid">0</p>
+          <div class="result-grid">
+            <div class="image-card card">
+              <h3>Generated</h3>
+              <img id="generated-image" alt="Generated image" loading="lazy" />
+            </div>
+            <div class="image-card card">
+              <h3>Target</h3>
+              <img id="target-image" alt="Target image" loading="lazy" />
+            </div>
+          </div>
+          <p id="score-line"></p>
+          <p id="bias-line"></p>
+          <p id="explanation-line"></p>
+          <p id="prompt-line"></p>
+          <button id="back-hub-btn" class="button btn" data-t="backToHub">Back to Task Hub</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-final">
+      <div class="container">
+        <div class="panel">
+          <div class="panel-top">
+            <button id="back-final" class="button btn ghost">Back</button>
+            <div class="progress-indicator" data-progress>○ ○ ○</div>
+          </div>
+          <h2 data-t="finalReport">Final Report</h2>
+          <p id="final-user"></p>
+          <div id="final-list"></div>
+          <p id="final-total"></p>
+          <button id="view-leaderboard-btn" class="button btn" data-t="leaderboard">Leaderboard</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-leaderboard">
+      <div class="container">
+        <div class="panel">
+          <div class="panel-top">
+            <button id="back-leaderboard" class="button btn ghost">Back</button>
+            <div class="progress-indicator" data-progress>○ ○ ○</div>
+          </div>
+          <h2 data-t="leaderboard">Leaderboard</h2>
+          <ol id="leaderboard-list"></ol>
+          <button id="reset-btn" class="button btn" data-t="reset">Reset</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
