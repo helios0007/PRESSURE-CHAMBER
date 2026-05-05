@@ -11,6 +11,9 @@
 
 const screens = {
   start: document.getElementById("screen-start"),
+  introVideo: document.getElementById("screen-intro-video"),
+  instructionChoice: document.getElementById("screen-instruction-choice"),
+  instructionVideo: document.getElementById("screen-instruction-video"),
   language: document.getElementById("screen-language"),
   hub: document.getElementById("screen-hub"),
   prompt: document.getElementById("screen-prompt"),
@@ -22,6 +25,20 @@ const screens = {
 const els = {
   username: document.getElementById("username"),
   startBtn: document.getElementById("start-btn"),
+
+  skipIntroBtn: document.getElementById("skip-intro-btn"),
+  replayIntroBtn: document.getElementById("replay-intro-btn"),
+  continueFromIntroBtn: document.getElementById("continue-from-intro-btn"),
+  introVideo: document.getElementById("intro-video"),
+
+  playInstructionBtn: document.getElementById("play-instruction-btn"),
+  skipToSetupBtn: document.getElementById("skip-to-setup-btn"),
+
+  backInstructionChoiceBtn: document.getElementById("back-instruction-choice-btn"),
+  replayInstructionBtn: document.getElementById("replay-instruction-btn"),
+  continueToLanguageBtn: document.getElementById("continue-to-language-btn"),
+  instructionVideo: document.getElementById("instruction-video"),
+
   taskGrid: document.getElementById("task-grid"),
   promptTitle: document.getElementById("prompt-title"),
   promptTaskId: document.getElementById("prompt-task-id"),
@@ -29,6 +46,7 @@ const els = {
   promptInput: document.getElementById("prompt-input"),
   charCounter: document.getElementById("char-counter"),
   generateBtn: document.getElementById("generate-btn"),
+
   generatedImage: document.getElementById("generated-image"),
   targetImage: document.getElementById("target-image"),
   scoreLine: document.getElementById("score-line"),
@@ -38,26 +56,31 @@ const els = {
   explanationLine: document.getElementById("explanation-line"),
   promptLine: document.getElementById("prompt-line"),
   backHubBtn: document.getElementById("back-hub-btn"),
+
   finalUser: document.getElementById("final-user"),
   finalList: document.getElementById("final-list"),
   finalTotal: document.getElementById("final-total"),
   viewLeaderboardBtn: document.getElementById("view-leaderboard-btn"),
   leaderboardList: document.getElementById("leaderboard-list"),
   resetBtn: document.getElementById("reset-btn"),
+
   backLanguage: document.getElementById("back-language"),
   backHub: document.getElementById("back-hub"),
   backPrompt: document.getElementById("back-prompt"),
   backResult: document.getElementById("back-result"),
   backFinal: document.getElementById("back-final"),
   backLeaderboard: document.getElementById("back-leaderboard"),
+
   loadingOverlay: document.getElementById("loading-overlay"),
 };
 
 let currentGenerateController = null;
 
 function showScreen(name) {
-  Object.values(screens).forEach((screen) => screen.classList.remove("active"));
-  screens[name].classList.add("active");
+  Object.values(screens).forEach((screen) => {
+    if (screen) screen.classList.remove("active");
+  });
+  if (screens[name]) screens[name].classList.add("active");
 }
 
 function showLoading(active) {
@@ -115,6 +138,7 @@ async function startSession() {
 
 function renderTaskHub() {
   els.taskGrid.innerHTML = "";
+
   appState.tasks.forEach((task) => {
     const done = appState.completedTasks.includes(task.id);
 
@@ -188,12 +212,15 @@ async function submitPrompt() {
     ]);
 
     const payload = await res.json();
+
     if (!res.ok) {
       throw new Error(payload.error || "Image generation failed.");
     }
+
     if (Number(payload.task_id) !== Number(appState.currentTask.id)) {
       throw new Error("Task response mismatch");
     }
+
     const score = Number(payload.score || 0);
     const generatedUrl = payload.generated_image_url || payload.generated_image;
 
@@ -258,8 +285,27 @@ async function loadLeaderboard() {
     .join("");
 }
 
+function pauseAllVideos() {
+  [els.introVideo, els.instructionVideo].forEach((video) => {
+    if (!video) return;
+    video.pause();
+  });
+}
+
+async function playVideo(videoEl) {
+  if (!videoEl) return;
+  try {
+    videoEl.currentTime = 0;
+    await videoEl.play();
+  } catch (err) {
+    console.warn("Video play blocked:", err);
+  }
+}
+
 function resetApp() {
   if (currentGenerateController) currentGenerateController.abort();
+  pauseAllVideos();
+
   appState.userName = "";
   appState.language = "en";
   appState.tasks = [];
@@ -267,19 +313,68 @@ function resetApp() {
   appState.scores = {};
   appState.currentTask = null;
   appState.total = 0;
+
   els.username.value = "";
   updateProgressIndicator();
   applyTranslations();
   showScreen("start");
 }
 
-els.startBtn.addEventListener("click", () => {
+els.startBtn.addEventListener("click", async () => {
   const name = els.username.value.trim();
   if (!name) {
     alert("Username must not be empty.");
     return;
   }
+
   appState.userName = name;
+  showScreen("introVideo");
+  await playVideo(els.introVideo);
+});
+
+els.skipIntroBtn.addEventListener("click", () => {
+  pauseAllVideos();
+  showScreen("instructionChoice");
+});
+
+els.replayIntroBtn.addEventListener("click", async () => {
+  await playVideo(els.introVideo);
+});
+
+els.continueFromIntroBtn.addEventListener("click", () => {
+  pauseAllVideos();
+  showScreen("instructionChoice");
+});
+
+els.introVideo.addEventListener("ended", () => {
+  showScreen("instructionChoice");
+});
+
+els.playInstructionBtn.addEventListener("click", async () => {
+  showScreen("instructionVideo");
+  await playVideo(els.instructionVideo);
+});
+
+els.skipToSetupBtn.addEventListener("click", () => {
+  pauseAllVideos();
+  showScreen("language");
+});
+
+els.backInstructionChoiceBtn.addEventListener("click", () => {
+  pauseAllVideos();
+  showScreen("instructionChoice");
+});
+
+els.replayInstructionBtn.addEventListener("click", async () => {
+  await playVideo(els.instructionVideo);
+});
+
+els.continueToLanguageBtn.addEventListener("click", () => {
+  pauseAllVideos();
+  showScreen("language");
+});
+
+els.instructionVideo.addEventListener("ended", () => {
   showScreen("language");
 });
 
@@ -293,12 +388,14 @@ document.querySelectorAll(".lang-btn").forEach((btn) => {
 });
 
 els.promptInput.addEventListener("input", updateCounter);
+
 els.promptInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
     submitPrompt();
   }
 });
+
 els.generateBtn.addEventListener("click", submitPrompt);
 
 els.backHubBtn.addEventListener("click", () => {
@@ -317,7 +414,7 @@ els.viewLeaderboardBtn.addEventListener("click", async () => {
 
 els.resetBtn.addEventListener("click", resetApp);
 
-els.backLanguage.addEventListener("click", () => showScreen("start"));
+els.backLanguage.addEventListener("click", () => showScreen("instructionChoice"));
 els.backHub.addEventListener("click", () => showScreen("language"));
 els.backPrompt.addEventListener("click", () => showScreen("hub"));
 els.backResult.addEventListener("click", () => showScreen("hub"));
@@ -328,6 +425,8 @@ function initBackgroundBlobs() {
   const cursorGlow = document.getElementById("cursor-glow");
   const mainBlob = document.querySelector(".blob-main");
   const floatingNodes = Array.from(document.querySelectorAll(".blob-floating"));
+
+  if (!cursorGlow || !mainBlob || !floatingNodes.length) return;
 
   let mouseX = window.innerWidth * 0.5;
   let mouseY = window.innerHeight * 0.5;
@@ -340,6 +439,7 @@ function initBackgroundBlobs() {
     const size = Number(node.dataset.size) || 700;
     const speed = 0.05 + Math.random() * 0.1;
     const angle = Math.random() * Math.PI * 2;
+
     return {
       node,
       size,
@@ -376,6 +476,7 @@ function initBackgroundBlobs() {
       const dx = mouseX - blob.x;
       const dy = mouseY - blob.y;
       const distance = Math.hypot(dx, dy);
+
       if (distance < 500) {
         blob.vx += dx * 0.00005;
         blob.vy += dy * 0.00005;

@@ -32,12 +32,99 @@
   <main id="app" aria-live="polite">
     <section class="screen active" id="screen-start">
       <div class="container">
-        <div class="panel">
+        <div class="panel hero-panel">
+          <p class="phase-label">Welcome</p>
           <h1 data-t="title">Pressure Chamber</h1>
           <p class="subtitle" data-t="subtitle">AI Bias Experiment</p>
+          <p class="helper-text hero-copy">
+            A playable experiment about how AI sees the world — and the bias embedded in its outputs.
+          </p>
+
           <label for="username" data-t="username">Username</label>
-          <input id="username" aria-label="Username" maxlength="24" autocomplete="off" />
-          <button id="start-btn" class="button btn" data-t="start">Start</button>
+          <input
+            id="username"
+            aria-label="Username"
+            maxlength="24"
+            autocomplete="off"
+            placeholder="Enter your name"
+          />
+
+          <div class="start-actions">
+            <button id="start-btn" class="button btn primary-btn" data-t="start" type="button">Start experience</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-intro-video">
+      <div class="container">
+        <div class="panel video-panel">
+          <div class="panel-top">
+            <button id="skip-intro-btn" class="button btn ghost" type="button">Skip intro</button>
+            <div class="progress-indicator">PHASE 1</div>
+          </div>
+
+          <h2>Intro video</h2>
+          <p class="helper-text">
+            The intro starts automatically. If playback pauses, press play or continue.
+          </p>
+
+          <div class="video-shell">
+            <video id="intro-video" class="feature-video" playsinline preload="auto" controls>
+              <source src="media/intro-video.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
+          <div class="video-actions">
+            <button id="replay-intro-btn" class="button btn ghost" type="button">Replay intro</button>
+            <button id="continue-from-intro-btn" class="button btn primary-btn" type="button">Continue</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-instruction-choice">
+      <div class="container">
+        <div class="panel">
+          <p class="phase-label">Phase 2</p>
+          <h2>Before you enter</h2>
+          <p class="helper-text">
+            Watch the instruction video or continue directly into the setup.
+          </p>
+
+          <div class="stack-actions">
+            <button id="play-instruction-btn" class="button btn primary-btn" type="button">Play instruction video</button>
+            <button id="skip-to-setup-btn" class="button btn ghost" type="button">Skip to setup</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-instruction-video">
+      <div class="container">
+        <div class="panel video-panel">
+          <div class="panel-top">
+            <button id="back-instruction-choice-btn" class="button btn ghost" type="button">Back</button>
+            <div class="progress-indicator">PHASE 2</div>
+          </div>
+
+          <h2>How to play</h2>
+          <p class="helper-text">
+            Watch the instructions, then continue into the game.
+          </p>
+
+          <div class="video-shell">
+            <video id="instruction-video" class="feature-video" playsinline preload="metadata" controls>
+              <source src="media/instruction-video.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
+          <div class="video-actions">
+            <button id="replay-instruction-btn" class="button btn ghost" type="button">Replay instruction</button>
+            <button id="continue-to-language-btn" class="button btn primary-btn" type="button">Continue to setup</button>
+          </div>
         </div>
       </div>
     </section>
@@ -46,14 +133,14 @@
       <div class="container">
         <div class="panel">
           <div class="panel-top">
-            <button id="back-language" class="button btn ghost">Back</button>
+            <button id="back-language" class="button btn ghost" type="button">Back</button>
             <div class="progress-indicator" data-progress>○ ○ ○</div>
           </div>
           <h2 data-t="selectLanguage">Select Language</h2>
           <div class="lang-grid">
-            <button class="button btn lang-btn" data-lang="en">English</button>
-            <button class="button btn lang-btn" data-lang="es">Español</button>
-            <button class="button btn lang-btn" data-lang="ca">Català</button>
+            <button class="button btn lang-btn" data-lang="en" type="button">English</button>
+            <button class="button btn lang-btn" data-lang="es" type="button">Español</button>
+            <button class="button btn lang-btn" data-lang="ca" type="button">Català</button>
           </div>
         </div>
       </div>
@@ -63,7 +150,7 @@
       <div class="container">
         <div class="panel">
           <div class="panel-top">
-            <button id="back-hub" class="button btn ghost">Back</button>
+            <button id="back-hub" class="button btn ghost" type="button">Back</button>
             <div class="progress-indicator" data-progress>○ ○ ○</div>
           </div>
           <h2 data-t="taskHub">Task Hub</h2>
@@ -77,16 +164,16 @@
       <div class="container">
         <div class="panel">
           <div class="panel-top">
-            <button id="back-prompt" class="button btn ghost">Back</button>
+            <button id="back-prompt" class="button btn ghost" type="button">Back</button>
             <div class="progress-indicator" data-progress>○ ○ ○</div>
           </div>
           <h2 id="prompt-title"></h2>
           <p id="prompt-task-id"></p>
           <p id="prompt-instruction"></p>
-          <textarea id="prompt-input" maxlength="200" aria-label="Prompt input"></textarea>
+          <textarea id="prompt-input" maxlength="200" aria-label="Prompt input" placeholder="Describe the image you want the model to generate..."></textarea>
           <div class="row">
             <small id="char-counter">0/200</small>
-            <button id="generate-btn" class="button btn" data-t="generate">Generate</button>
+            <button id="generate-btn" class="button btn primary-btn" data-t="generate" type="button">Generate</button>
           </div>
         </div>
       </div>
@@ -96,7 +183,7 @@
       <div class="container">
         <div class="panel">
           <div class="panel-top">
-            <button id="back-result" class="button btn ghost">Back</button>
+            <button id="back-result" class="button btn ghost" type="button">Back</button>
             <div class="progress-indicator" data-progress>○ ○ ○</div>
           </div>
           <h2 data-t="result">Result</h2>
@@ -116,7 +203,7 @@
           <p id="bias-line"></p>
           <p id="explanation-line"></p>
           <p id="prompt-line"></p>
-          <button id="back-hub-btn" class="button btn" data-t="backToHub">Back to Task Hub</button>
+          <button id="back-hub-btn" class="button btn primary-btn" data-t="backToHub" type="button">Back to Task Hub</button>
         </div>
       </div>
     </section>
@@ -125,14 +212,14 @@
       <div class="container">
         <div class="panel">
           <div class="panel-top">
-            <button id="back-final" class="button btn ghost">Back</button>
+            <button id="back-final" class="button btn ghost" type="button">Back</button>
             <div class="progress-indicator" data-progress>○ ○ ○</div>
           </div>
           <h2 data-t="finalReport">Final Report</h2>
           <p id="final-user"></p>
           <div id="final-list"></div>
           <p id="final-total"></p>
-          <button id="view-leaderboard-btn" class="button btn" data-t="leaderboard">Leaderboard</button>
+          <button id="view-leaderboard-btn" class="button btn primary-btn" data-t="leaderboard" type="button">Leaderboard</button>
         </div>
       </div>
     </section>
@@ -141,12 +228,12 @@
       <div class="container">
         <div class="panel">
           <div class="panel-top">
-            <button id="back-leaderboard" class="button btn ghost">Back</button>
+            <button id="back-leaderboard" class="button btn ghost" type="button">Back</button>
             <div class="progress-indicator" data-progress>○ ○ ○</div>
           </div>
           <h2 data-t="leaderboard">Leaderboard</h2>
           <ol id="leaderboard-list"></ol>
-          <button id="reset-btn" class="button btn" data-t="reset">Reset</button>
+          <button id="reset-btn" class="button btn ghost" data-t="reset" type="button">Reset</button>
         </div>
       </div>
     </section>
