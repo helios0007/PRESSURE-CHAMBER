@@ -1,0 +1,74 @@
+[
+  {
+    "id": "bias_1",
+    "title": "Right-Hand Bias",
+    "prompt": "A model sees the world with missing data from one side, favoring the right hand.",
+    "instruction": "Write a prompt that avoids assuming handedness.",
+    "bias": "Default assumption bias",
+    "category": "Bias Playground",
+    "biased_image_path": "/images/bias/right_hand_biased.png",
+    "neutral_image_path": "/images/bias/right_hand_neutral.png",
+    "filter_type": "occlusion",
+    "explanation": "This bias hides information from one side, creating a sense that a model favors right-handed data when left-side signals are missing."
+  },
+  {
+    "id": "bias_2",
+    "title": "Gender Bias",
+    "prompt": "A model applies an identity projection overlay that shifts how people are represented.",
+    "instruction": "Write a prompt that avoids gendered assumptions.",
+    "bias": "Identity projection bias",
+    "category": "Bias Playground",
+    "biased_image_path": "/images/bias/gender_biased.png",
+    "neutral_image_path": "/images/bias/gender_neutral.png",
+    "filter_type": "overlay",
+    "explanation": "This bias adds an identity overlay to the output, making social categories more prominent than the actual content."
+  },
+  {
+    "id": "bias_3",
+    "title": "Language Bias",
+    "prompt": "A model filters visual style through a tinted cultural lens.",
+    "instruction": "Write a prompt that does not presume a cultural or language stereotype.",
+    "bias": "Cultural lens bias",
+    "category": "Bias Playground",
+    "biased_image_path": "/images/bias/language_biased.png",
+    "neutral_image_path": "/images/bias/language_neutral.png",
+    "filter_type": "color",
+    "explanation": "This bias applies a cultural tint, subtly changing the way information is presented based on linguistic and cultural assumptions."
+  },
+  {
+    "id": "bias_4",
+    "title": "Aspirational Architecture Bias",
+    "prompt": "A model simplifies reality by blurring away real-world complexity.",
+    "instruction": "Write a prompt that keeps real-world detail instead of making it idealized.",
+    "bias": "Idealization bias",
+    "category": "Bias Playground",
+    "biased_image_path": "/images/bias/architecture_biased.png",
+    "neutral_image_path": "/images/bias/architecture_neutral.png",
+    "filter_type": "blur",
+    "explanation": "This bias idealizes the scene by softening details and removing texture, creating a more aspirational but less grounded output."
+  },
+  {
+    "id": "bias_5",
+    "title": "Authority Bias",
+    "prompt": "A model frames the scene with a spotlight that suggests importance and control.",
+    "instruction": "Write a prompt that does not give undue authority to a single element.",
+    "bias": "Framing authority bias",
+    "category": "Bias Playground",
+    "biased_image_path": "/images/bias/authority_biased.png",
+    "neutral_image_path": "/images/bias/authority_neutral.png",
+    "filter_type": "spotlight",
+    "explanation": "This bias uses framing and lighting to make certain elements appear more authoritative and convincing."
+  },
+  {
+    "id": "bias_6",
+    "title": "Frictionless World Bias",
+    "prompt": "A model removes noise and chaos, boosting contrast to present an over-simplified world.",
+    "instruction": "Write a prompt that acknowledges complexity and friction in the scene.",
+    "bias": "Simplification bias",
+    "category": "Bias Playground",
+    "biased_image_path": "/images/bias/frictionless_biased.png",
+    "neutral_image_path": "/images/bias/frictionless_neutral.png",
+    "filter_type": "contrast",
+    "explanation": "This bias clears away complexity and boosts contrast, making the output feel too clean and unnaturally easy."
+  }
+]

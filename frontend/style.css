@@ -421,6 +421,7 @@ img {
 .score-low { color: var(--danger); }
 .score-mid { color: var(--warn); }
 .score-high { color: var(--ok); }
+.score-bias-mode { text-shadow: 0 0 14px rgba(59, 130, 246, 0.8); }
 
 .loading-overlay {
   position: fixed;
@@ -470,6 +471,100 @@ img {
   background: linear-gradient(90deg, #2563eb, #60a5fa);
   animation: load 1.3s infinite;
 }
+
+/* === BIAS PLAYGROUND ADDITION START === */
+.bias-playground-entry {
+  margin-top: 24px;
+}
+
+.bias-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.bias-card {
+  min-height: 170px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.bias-play-panel .bias-control-row {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.bias-visual-shell {
+  position: relative;
+  width: 100%;
+  min-height: 320px;
+  background: rgba(5, 15, 35, 0.95);
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(120, 160, 255, 0.35);
+  margin-bottom: 18px;
+}
+
+.bias-video,
+.bias-canvas,
+.bias-fallback-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.bias-canvas {
+  background: #081224;
+  z-index: 3;
+}
+
+.bias-video {
+  z-index: 2;
+}
+
+.bias-fallback-image {
+  object-fit: contain;
+  padding: 18px;
+  z-index: 1;
+}
+
+.bias-info-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 50;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(8px);
+  padding: 24px;
+}
+
+.bias-info-overlay.active {
+  display: flex;
+}
+
+.bias-info-panel {
+  max-width: 720px;
+  width: 100%;
+  padding: 24px;
+  border: 1px solid rgba(120, 160, 255, 0.35);
+  background: rgba(8, 14, 36, 0.98);
+}
+
+.bias-info-panel h3 {
+  margin-top: 0;
+}
+
+.bias-info-panel p {
+  margin: 14px 0 0;
+  line-height: 1.7;
+}
+/* === BIAS PLAYGROUND ADDITION END === */
 
 @keyframes dots {
   0% { content: ""; }
@@ -533,3 +628,148 @@ img {
     max-height: 38vh;
   }
 }
+
+/* === BIAS LANDSCAPE SYSTEM START === */
+body {
+  overflow: hidden;
+}
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.screen {
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  overflow: hidden;
+}
+
+.screen.active {
+  display: flex;
+}
+
+.panel {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  border-radius: 0;
+  padding: 40px;
+  overflow: hidden;
+}
+
+.prompt-layout {
+  display: flex;
+  width: 100%;
+  height: calc(100% - 58px);
+  gap: 40px;
+}
+
+.prompt-left,
+.prompt-right {
+  flex: 1;
+  min-width: 0;
+}
+
+.prompt-left {
+  min-height: 0;
+}
+
+.prompt-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.prompt-left img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.prompt-right textarea {
+  min-height: 220px;
+  resize: none;
+}
+
+.result-grid {
+  display: flex;
+  gap: 40px;
+  height: 60%;
+}
+
+.result-grid > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.result-grid img {
+  height: calc(100% - 42px);
+  object-fit: contain;
+}
+
+.result-split {
+  display: flex;
+  gap: 40px;
+  width: 100%;
+  height: 60%;
+}
+
+.result-left,
+.result-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.result-left img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #0a0f1f;
+}
+
+.generated-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.generated-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.bias-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.bias-visual-shell {
+  height: 52vh;
+  min-height: 0;
+}
+
+@media (max-width: 768px) {
+  .panel {
+    padding: 20px;
+  }
+
+  .prompt-layout,
+  .result-grid {
+    gap: 20px;
+  }
+
+  .bias-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+/* === BIAS LANDSCAPE SYSTEM END === */

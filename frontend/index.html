@@ -156,6 +156,67 @@
           <h2 data-t="taskHub">Task Hub</h2>
           <p data-t="chooseTask">Choose a task</p>
           <div id="task-grid" class="task-grid"></div>
+          <div class="bias-playground-entry">
+            <article class="card bias-card bias-intro-card">
+              <div class="task-card-top">
+                <div class="task-meta">
+                  <h3>Bias Playground</h3>
+                  <p class="task-category">Explore bias visuals</p>
+                  <p class="task-bias">Independent mode</p>
+                </div>
+              </div>
+              <button id="open-bias-playground-btn" class="button btn primary-btn" type="button">Open Bias Playground</button>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-bias-games">
+      <div class="container">
+        <div class="panel">
+          <div class="panel-top">
+            <button id="back-bias-games-btn" class="button btn ghost" type="button">Back</button>
+            <div class="progress-indicator">BIAS MODE</div>
+          </div>
+          <h2>Bias Playground</h2>
+          <p class="helper-text">
+            Choose a bias game and see how subtle assumptions change what the model shows.
+          </p>
+          <div id="bias-games-grid" class="bias-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-bias-play">
+      <div class="container">
+        <div class="panel bias-play-panel">
+          <div class="panel-top">
+            <button id="back-bias-play-btn" class="button btn ghost" type="button">Back</button>
+            <div class="progress-indicator">BIAS PLAY</div>
+          </div>
+          <h2 id="bias-play-title">Bias Playground</h2>
+          <p id="bias-play-prompt" class="helper-text"></p>
+          <div class="row bias-control-row">
+            <button id="toggle-bias-btn" class="button btn primary-btn" type="button">Toggle Bias</button>
+            <button id="bias-explain-btn" class="button btn ghost" type="button">ⓘ</button>
+          </div>
+          <div class="bias-visual-shell">
+            <canvas id="bias-canvas" class="bias-canvas"></canvas>
+            <video id="bias-video" class="bias-video" autoplay muted playsinline></video>
+            <img id="bias-fallback-image" class="bias-fallback-image" alt="Bias visual fallback" loading="lazy" />
+          </div>
+          <p id="bias-explanation" class="helper-text"></p>
+          <p id="bias-feedback" class="helper-text"></p>
+        </div>
+      </div>
+      <div id="bias-info-overlay" class="bias-info-overlay" aria-hidden="true">
+        <div class="bias-info-panel card">
+          <button id="close-bias-info-btn" class="button btn ghost" type="button">Close</button>
+          <h3>Bias Mode Insights</h3>
+          <p id="bias-info-what"></p>
+          <p id="bias-info-why"></p>
+          <p id="bias-info-impact"></p>
         </div>
       </div>
     </section>
@@ -167,13 +228,21 @@
             <button id="back-prompt" class="button btn ghost" type="button">Back</button>
             <div class="progress-indicator" data-progress>○ ○ ○</div>
           </div>
-          <h2 id="prompt-title"></h2>
-          <p id="prompt-task-id"></p>
-          <p id="prompt-instruction"></p>
-          <textarea id="prompt-input" maxlength="200" aria-label="Prompt input" placeholder="Describe the image you want the model to generate..."></textarea>
-          <div class="row">
-            <small id="char-counter">0/200</small>
-            <button id="generate-btn" class="button btn primary-btn" data-t="generate" type="button">Generate</button>
+          <div class="prompt-layout">
+            <div class="prompt-left">
+              <img id="prompt-target-image" alt="Target image for this prompt" />
+            </div>
+            <div class="prompt-right">
+              <h2 id="prompt-title"></h2>
+              <p id="prompt-task-id"></p>
+              <p id="prompt-instruction"></p>
+              <textarea id="prompt-input" maxlength="200" aria-label="Prompt input" placeholder="Describe the image you want the model to generate..."></textarea>
+              <div class="row">
+                <small id="char-counter">0/200</small>
+                <button id="generate-btn" class="button btn primary-btn" data-t="generate" type="button">Generate</button>
+              </div>
+              <button id="open-bias-preview-btn" class="button btn ghost" type="button" hidden>Open Bias Preview</button>
+            </div>
           </div>
         </div>
       </div>
@@ -189,14 +258,16 @@
           <h2 data-t="result">Result</h2>
           <p id="result-task-id"></p>
           <p id="result-score" class="score score-mid">0</p>
-          <div class="result-grid">
-            <div class="image-card card">
-              <h3>Generated</h3>
-              <img id="generated-image" alt="Generated image" loading="lazy" />
-            </div>
-            <div class="image-card card">
+          <div class="result-split">
+            <div class="result-left">
               <h3>Target</h3>
               <img id="target-image" alt="Target image" loading="lazy" />
+            </div>
+            <div class="result-right">
+              <h3>Generated</h3>
+              <div class="generated-placeholder">
+                <img id="generated-image" alt="Generated image" loading="lazy" />
+              </div>
             </div>
           </div>
           <p id="score-line"></p>

@@ -1,0 +1,26 @@
+{
+  "right_hand": {
+    "title": "Default Assumption Bias",
+    "description": "When information is missing, models assume the most common pattern instead of considering alternatives. In this case, 70% of the people in the world are right handed , so the model shows the image of a right handed person."
+  },
+  "gender": {
+    "title": "Gender Stereotyping",
+    "description": "Models often associate professions and powerful roles with males due to biased training data."
+  },
+  "language": {
+    "title": "Cultural Misalignment",
+    "description": "Different languages influence how scenes and identities are interpreted by the model."
+  },
+  "architecture": {
+    "title": "Trigger word bias",
+    "description": "AI Models often associate trigger words for visual elements, in this case the word 'smart' is often associated with a sci-fi aesthetic."
+  },
+  "authority": {
+    "title": "Focus Collapse Bias",
+    "description": "The model emphasizes dominant subjects and suppresses surrounding context."
+  },
+  "friction": {
+    "title": "Flattening Bias",
+    "description": "Crowded and complex environments are reduced into clean, frictionless scenes."
+  }
+}

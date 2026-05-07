@@ -10,6 +10,7 @@ from similarity import calculate_similarity_score
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
 TASKS_PATH = DATA_DIR / "tasks.json"
+TASKS_2_PATH = DATA_DIR / "tasks_2.json"
 LEADERBOARD_PATH = DATA_DIR / "leaderboard.json"
 PROMPT_LOGS_PATH = DATA_DIR / "prompt_logs.json"
 
@@ -35,6 +36,10 @@ def save_json(path: Path, payload):
 
 def get_tasks():
     return load_json(TASKS_PATH, [])
+
+
+def get_bias_tasks():
+    return load_json(TASKS_2_PATH, [])
 
 
 def get_active_tasks():
@@ -68,7 +73,7 @@ def pick_target_image_for_task(task: dict) -> str:
     return f"/images/targets/task_{task_id:02d}.png"
 
 
-def log_prompt(task_id: int, prompt: str):
+def log_prompt(task_id, prompt: str):
     logs = load_json(PROMPT_LOGS_PATH, [])
     logs.append(
         {
@@ -102,6 +107,11 @@ def frontend_files(filename):
 
 @app.route("/start", methods=["POST"])
 def start_session():
+    bias_tasks = get_bias_tasks()
+    if len(bias_tasks) >= 3:
+        selected = random.sample(bias_tasks, 3)
+        return jsonify({"tasks": selected})
+
     tasks = get_active_tasks()
     if len(tasks) < 3:
         return jsonify({"error": "Not enough tasks configured."}), 500
@@ -115,38 +125,38 @@ def generate():
     payload = request.get_json(silent=True) or {}
     prompt = (payload.get("prompt") or "").strip() or "Untitled prompt"
     raw_task_id = payload.get("task_id")
-
-    try:
-        task_id = int(raw_task_id)
-    except (TypeError, ValueError):
+    task_id = str(raw_task_id or "").strip()
+    if not task_id:
         return jsonify({"error": "Invalid task_id."}), 400
 
     if len(prompt) > 200:
         prompt = prompt[:200]
 
     tasks = get_active_tasks()
-    task = next((t for t in tasks if int(t.get("id", -1)) == task_id), None)
+    bias_tasks = get_bias_tasks()
+    task = next((t for t in tasks if str(t.get("id", "")) == task_id), None)
+    if task is None:
+        task = next((t for t in bias_tasks if str(t.get("id", "")) == task_id), None)
+
     if task is None:
         return jsonify({"error": "Invalid task_id."}), 400
 
-    generated_image = pick_generated_image_for_task(task)
-    target_image = pick_target_image_for_task(task)
+    if task.get("biased_image_path") and task.get("neutral_image_path"):
+        generated_image = task["biased_image_path"]
+        target_image = task["neutral_image_path"]
+    else:
+        generated_image = pick_generated_image_for_task(task)
+        target_image = pick_target_image_for_task(task)
 
     generated_path = resolve_local_image_path(generated_image)
-    target_path = resolve_local_image_path(target_image)
+    if not generated_path.exists():
+        generated_image = "/images/placeholder.png"
+        generated_path = resolve_local_image_path(generated_image)
 
-    if not generated_path.exists() or not target_path.exists():
-        return (
-            jsonify(
-                {
-                    "error": "Task image files are missing.",
-                    "task_id": task_id,
-                    "generated_image_expected": generated_image,
-                    "target_image_expected": target_image,
-                }
-            ),
-            500,
-        )
+    target_path = resolve_local_image_path(target_image)
+    if not target_path.exists():
+        target_image = generated_image
+        target_path = resolve_local_image_path(target_image)
 
     log_prompt(task_id, prompt)
 
