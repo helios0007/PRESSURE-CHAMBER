@@ -1143,8 +1143,22 @@ let biasAnimationFrame = null;
 
 const biasLandscapeShowScreen = showScreen;
 showScreen = function showLandscapeScreen(name) {
+  const previousName = Object.entries(screens).find(([, screen]) => screen?.classList.contains("active"))?.[0] || "";
+  document.body.classList.add("is-cinematic-transitioning");
+  document.body.classList.toggle("is-entering-bias-chamber", name === "biasGames");
+
   biasLandscapeShowScreen(name);
   document.body.classList.toggle("is-prompt-screen", name === "prompt");
+  document.body.classList.toggle("is-bias-chamber-screen", name === "biasGames");
+
+  window.dispatchEvent(new CustomEvent("cinematic-screen-change", {
+    detail: { from: previousName, to: name },
+  }));
+
+  window.clearTimeout(window.__cinematicTransitionTimer);
+  window.__cinematicTransitionTimer = window.setTimeout(() => {
+    document.body.classList.remove("is-cinematic-transitioning", "is-entering-bias-chamber");
+  }, name === "biasGames" ? 4600 : 2600);
 
   if (name === "prompt") {
     updatePromptTargetImage();
