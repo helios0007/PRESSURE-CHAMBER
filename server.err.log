@@ -1,0 +1,23 @@
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.80:5000
+Press CTRL+C to quit
+ * Restarting with watchdog (windowsapi)
+ * Debugger is active!
+ * Debugger PIN: 427-819-076
+127.0.0.1 - - [11/May/2026 21:16:41] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [11/May/2026 21:16:41] "GET /media/intro-video.mp4 HTTP/1.1" 200 -
+127.0.0.1 - - [11/May/2026 21:17:01] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [11/May/2026 21:17:01] "GET /app.js HTTP/1.1" 200 -
+127.0.0.1 - - [11/May/2026 21:17:01] "GET /style.css HTTP/1.1" 200 -
+127.0.0.1 - - [11/May/2026 21:17:01] "GET /media/intro-video.mp4 HTTP/1.1" 206 -
+127.0.0.1 - - [11/May/2026 21:17:01] "GET /media/instruction-video.mp4 HTTP/1.1" 206 -
+127.0.0.1 - - [11/May/2026 21:17:01] "GET /noise.png HTTP/1.1" 200 -
+127.0.0.1 - - [11/May/2026 21:17:01] "GET /data/translations.json HTTP/1.1" 200 -
+127.0.0.1 - - [11/May/2026 21:17:01] "GET /data/bias_explanations.json HTTP/1.1" 200 -
+127.0.0.1 - - [11/May/2026 21:17:01] "GET /media/intro-video.mp4 HTTP/1.1" 206 -
+127.0.0.1 - - [11/May/2026 21:17:07] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [11/May/2026 21:17:13] "POST /start HTTP/1.1" 200 -
+127.0.0.1 - - [11/May/2026 21:17:17] "GET /backend/captions.md HTTP/1.1" 200 -
+127.0.0.1 - - [11/May/2026 21:17:17] "GET /images/new_test_target/bias_4.png HTTP/1.1" 200 -

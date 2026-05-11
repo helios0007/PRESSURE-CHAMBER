@@ -1,0 +1,50 @@
+﻿{
+  "en": {
+    "title": "Pressure Chamber",
+    "subtitle": "AI Bias Experiment",
+    "start": "Start",
+    "username": "Username",
+    "selectLanguage": "Select Language",
+    "taskHub": "Task Hub",
+    "chooseTask": "Choose a task",
+    "generate": "Generate",
+    "thinking": "AI is thinking...",
+    "result": "Result",
+    "backToHub": "Back to Task Hub",
+    "finalReport": "Final Report",
+    "leaderboard": "Leaderboard",
+    "reset": "Reset"
+  },
+  "es": {
+    "title": "Pressure Chamber",
+    "subtitle": "Experimento de Sesgo en IA",
+    "start": "Comenzar",
+    "username": "Nombre",
+    "selectLanguage": "Seleccionar idioma",
+    "taskHub": "Panel de tareas",
+    "chooseTask": "Elige una tarea",
+    "generate": "Generar",
+    "thinking": "La IA está pensando...",
+    "result": "Resultado",
+    "backToHub": "Volver al panel",
+    "finalReport": "Informe final",
+    "leaderboard": "Clasificación",
+    "reset": "Reiniciar"
+  },
+  "ca": {
+    "title": "Pressure Chamber",
+    "subtitle": "Experiment de Biaix en IA",
+    "start": "Inicia",
+    "username": "Nom d'usuari",
+    "selectLanguage": "Selecciona idioma",
+    "taskHub": "Panell de tasques",
+    "chooseTask": "Tria una tasca",
+    "generate": "Genera",
+    "thinking": "La IA està pensant...",
+    "result": "Resultat",
+    "backToHub": "Torna al panell",
+    "finalReport": "Informe final",
+    "leaderboard": "Classificació",
+    "reset": "Reinicia"
+  }
+}
