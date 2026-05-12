@@ -1846,3 +1846,758 @@ body.is-cinematic-transitioning .globe-background {
   }
 }
 /* === CONTINUOUS CINEMATIC JOURNEY END === */
+
+/* === UI REFINEMENT: LAYOUT, TYPE, BUTTONS, VIDEO SCALE START === */
+main,
+.screen {
+  min-height: 100vh;
+}
+
+.screen.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container,
+#screen-prompt .container,
+#screen-bias-games .container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  text-align: center;
+}
+
+.hero-panel,
+.video-panel,
+#screen-language .panel,
+#screen-instruction-choice .panel,
+#screen-bias-games .panel,
+#screen-bias-play .panel,
+#screen-prompt .panel {
+  justify-content: center;
+}
+
+.panel-top {
+  align-self: stretch;
+  margin-bottom: 0;
+}
+
+h1,
+#screen-start h1 {
+  margin: 0;
+  font-size: clamp(3rem, 5vw, 6rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+
+h2,
+#screen-bias-games h2,
+#bias-play-title,
+#prompt-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.2vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+#screen-bias-games h2 {
+  font-size: clamp(3rem, 5vw, 6rem);
+}
+
+#prompt-title {
+  font-size: clamp(2.6rem, 4.6vw, 5.6rem);
+  line-height: 0.95;
+}
+
+.subtitle,
+.helper-text,
+#prompt-instruction,
+#bias-play-prompt,
+#bias-explanation,
+#bias-feedback,
+#screen-bias-games > .container > .panel > .helper-text {
+  margin: 0;
+  max-width: 850px;
+  font-size: clamp(1rem, 1.2vw, 1.4rem);
+  line-height: 1.6;
+}
+
+.phase-label,
+.progress-indicator,
+#prompt-task-id,
+#result-task-id {
+  letter-spacing: 0.18em;
+}
+
+.button,
+.btn,
+#screen-prompt .panel-top .ghost,
+#generate-btn,
+#open-bias-preview-btn,
+#screen-bias-games .bias-card .button {
+  width: auto;
+  min-width: 160px;
+  max-width: 240px;
+  height: 52px;
+  padding: 0 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+#bias-explain-btn {
+  min-width: 52px;
+  width: 52px;
+  padding: 0;
+}
+
+.start-actions,
+.stack-actions,
+.video-actions,
+.row,
+.bias-control-row {
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+}
+
+.stack-actions {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.video-panel {
+  width: min(96vw, 1680px);
+  height: auto;
+  max-height: calc(100vh - 48px);
+  padding: clamp(20px, 3vw, 40px);
+}
+
+.video-shell {
+  width: min(92vw, 1600px);
+  height: min(72vh, 900px);
+  margin: 0;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.35);
+}
+
+.feature-video {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: contain;
+}
+
+#screen-bias-games .panel {
+  width: min(1180px, 94vw);
+  height: min(86vh, 820px);
+  gap: 24px;
+}
+
+#screen-bias-games > .container > .panel > .helper-text {
+  width: min(850px, 86vw);
+}
+
+#screen-bias-play .panel {
+  width: min(1120px, 94vw);
+  height: min(90vh, 860px);
+  padding: clamp(22px, 3vw, 42px);
+}
+
+.bias-visual-shell {
+  width: min(92vw, 980px);
+  height: min(52vh, 620px);
+  min-height: 320px;
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .panel {
+    gap: 20px;
+  }
+
+  h1,
+  #screen-start h1 {
+    font-size: clamp(2.2rem, 12vw, 4rem);
+  }
+
+  h2,
+  #screen-bias-games h2,
+  #bias-play-title,
+  #prompt-title {
+    font-size: clamp(1.35rem, 7vw, 2.4rem);
+  }
+
+  #screen-bias-games h2 {
+    font-size: clamp(2.8rem, 14vw, 4.8rem);
+  }
+
+  .button,
+  .btn,
+  #screen-prompt .panel-top .ghost,
+  #generate-btn,
+  #open-bias-preview-btn,
+  #screen-bias-games .bias-card .button {
+    width: auto;
+    max-width: min(240px, 100%);
+  }
+
+  .start-actions,
+  .stack-actions,
+  .video-actions,
+  .row,
+  .bias-control-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .video-panel {
+    max-height: calc(100vh - 28px);
+    padding: 18px;
+  }
+
+  .video-shell {
+    width: min(92vw, 1600px);
+    height: min(58vh, 900px);
+  }
+
+  #screen-bias-play .panel {
+    height: auto;
+    max-height: calc(100vh - 28px);
+    overflow: auto;
+  }
+
+  .bias-visual-shell {
+    width: min(92vw, 980px);
+    height: min(44vh, 620px);
+  }
+}
+/* === UI REFINEMENT: LAYOUT, TYPE, BUTTONS, VIDEO SCALE END === */
+
+/* === WORKFLOW + LANGUAGE SELECTION UI REFINEMENT START === */
+.panel-top {
+  position: fixed;
+  top: 32px;
+  left: 32px;
+  right: 32px;
+  z-index: 80;
+  display: block;
+  margin: 0;
+  pointer-events: none;
+}
+
+.panel-top .button,
+.panel-top .btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: auto;
+}
+
+.panel-top .progress-indicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  pointer-events: none;
+  color: rgba(230, 239, 255, 0.72);
+  font-size: 13px;
+  letter-spacing: 0.22em;
+}
+
+.language-panel {
+  width: min(1020px, 94vw);
+  height: auto;
+  min-height: min(620px, 82vh);
+  padding: clamp(28px, 5vw, 64px);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.language-panel .phase-label {
+  margin: 0;
+  color: rgba(130, 232, 255, 0.78);
+}
+
+.language-panel h2 {
+  font-size: clamp(3rem, 5vw, 6rem);
+}
+
+.language-helper {
+  color: rgba(230, 239, 255, 0.74);
+}
+
+.lang-grid {
+  width: min(820px, 92vw);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 220px));
+  justify-content: center;
+  align-items: center;
+  gap: 36px;
+  margin-top: 8px;
+}
+
+.language-card {
+  position: relative;
+  width: 220px;
+  height: 140px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  background: rgba(10, 15, 35, 0.18);
+  color: var(--cinema-text);
+  cursor: pointer;
+  backdrop-filter: blur(14px) saturate(116%);
+  -webkit-backdrop-filter: blur(14px) saturate(116%);
+  box-shadow:
+    0 18px 46px rgba(0, 0, 0, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 24px rgba(94, 160, 255, 0.1);
+  transform: translate3d(0, 0, 0);
+  transition:
+    transform 260ms ease,
+    border-color 260ms ease,
+    box-shadow 260ms ease,
+    background 260ms ease;
+}
+
+.language-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(130, 232, 255, 0.12), transparent 42%),
+    radial-gradient(circle at 50% 120%, rgba(94, 160, 255, 0.18), transparent 54%);
+  opacity: 0.64;
+  transition: opacity 260ms ease;
+}
+
+.language-card-glow {
+  position: absolute;
+  width: 86px;
+  height: 86px;
+  border-radius: 999px;
+  background: rgba(94, 160, 255, 0.24);
+  filter: blur(28px);
+  opacity: 0.52;
+  transform: translateY(24px);
+  transition: opacity 260ms ease, transform 260ms ease;
+}
+
+.language-name,
+.language-code {
+  position: relative;
+  z-index: 1;
+}
+
+.language-name {
+  font-family: "Bebas Neue", "Space Grotesk", "Inter", sans-serif;
+  font-size: 34px;
+  line-height: 0.95;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.language-code {
+  min-width: 46px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(230, 239, 255, 0.72);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+}
+
+.language-card:hover,
+.language-card:focus-visible {
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(130, 232, 255, 0.26);
+  background: rgba(14, 22, 48, 0.26);
+  box-shadow:
+    0 22px 54px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 38px rgba(94, 160, 255, 0.24);
+}
+
+.language-card:hover::before,
+.language-card:focus-visible::before {
+  opacity: 0.92;
+}
+
+.language-card:hover .language-card-glow,
+.language-card:focus-visible .language-card-glow {
+  opacity: 0.82;
+  transform: translateY(14px);
+}
+
+.language-card:focus-visible {
+  outline: 1px solid rgba(130, 232, 255, 0.68);
+  outline-offset: 4px;
+}
+
+.language-card.is-selected {
+  border-color: rgba(130, 232, 255, 0.42);
+  background: rgba(18, 30, 64, 0.36);
+  box-shadow:
+    0 24px 58px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 0 46px rgba(94, 160, 255, 0.34);
+  animation: languageSelectedPulse 900ms ease-in-out infinite alternate;
+}
+
+@keyframes languageSelectedPulse {
+  from {
+    filter: brightness(1);
+  }
+  to {
+    filter: brightness(1.12);
+  }
+}
+
+@media (max-width: 820px) {
+  .panel-top {
+    top: 18px;
+    left: 18px;
+    right: 18px;
+  }
+
+  .language-panel {
+    min-height: 100vh;
+    padding: 86px 18px 28px;
+  }
+
+  .lang-grid {
+    grid-template-columns: 1fr;
+    width: min(320px, 88vw);
+    gap: 18px;
+  }
+
+  .language-card {
+    width: 100%;
+    height: 118px;
+  }
+}
+/* === WORKFLOW + LANGUAGE SELECTION UI REFINEMENT END === */
+
+/* === VIDEO DISPLAY FIX: FULL FRAME VISIBILITY START === */
+.video-panel {
+  width: min(98vw, 1880px);
+  max-height: calc(100vh - 32px);
+  padding: clamp(16px, 2vw, 32px);
+}
+
+.video-shell {
+  width: min(96vw, 1800px);
+  height: min(82vh, 1000px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.35);
+}
+
+.feature-video,
+.video-shell video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+@media (max-width: 768px) {
+  .video-panel {
+    width: min(98vw, 1880px);
+    max-height: calc(100vh - 24px);
+    padding: 12px;
+  }
+
+  .video-shell {
+    width: min(96vw, 1800px);
+    height: min(70vh, 1000px);
+  }
+}
+/* === VIDEO DISPLAY FIX: FULL FRAME VISIBILITY END === */
+
+/* === CHALLENGE SELECTION DOME REFINEMENT START === */
+#screen-bias-games {
+  --bias-parallax-x: 0px;
+  --bias-parallax-y: 0px;
+  --bias-tilt-x: 0deg;
+  --bias-tilt-y: 0deg;
+  perspective: 1800px;
+  transform-style: preserve-3d;
+}
+
+#screen-bias-games .container {
+  padding: clamp(28px, 4vw, 64px);
+}
+
+#screen-bias-games .panel {
+  position: relative;
+  width: min(1220px, 94vw);
+  height: min(88vh, 840px);
+  padding: clamp(28px, 3vw, 46px);
+  gap: 28px;
+  overflow: visible;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform-style: preserve-3d;
+  transform:
+    rotateX(var(--bias-tilt-x))
+    rotateY(var(--bias-tilt-y))
+    translate3d(calc(var(--bias-parallax-x) * 0.18), calc(var(--bias-parallax-y) * 0.18), 0);
+  transition: transform 220ms ease;
+}
+
+#screen-bias-games .panel::before,
+#screen-bias-games .panel::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+#screen-bias-games .panel::before {
+  inset: 2% 1% 22%;
+  border-radius: 50% 50% 42% 42% / 36% 36% 54% 54%;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(130, 232, 255, 0.12), transparent 26%),
+    radial-gradient(circle at 50% 100%, rgba(94, 160, 255, 0.14), transparent 42%),
+    repeating-radial-gradient(circle at 50% 54%, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 46px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  opacity: 0.72;
+  filter: blur(0.2px);
+}
+
+#screen-bias-games .panel::after {
+  bottom: 4%;
+  width: min(860px, 84vw);
+  height: min(280px, 30vh);
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at center, rgba(94, 160, 255, 0.18), transparent 56%),
+    repeating-radial-gradient(ellipse at center, rgba(130, 232, 255, 0.16) 0 1px, transparent 1px 30px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  opacity: 0.74;
+  transform: translateX(-50%) rotateX(74deg) translateY(calc(var(--bias-parallax-y) * 0.12));
+  box-shadow: 0 0 40px rgba(94, 160, 255, 0.14);
+}
+
+#screen-bias-games .panel-top {
+  position: fixed;
+  top: 32px;
+  left: 32px;
+  right: 32px;
+  width: auto;
+  margin: 0;
+  z-index: 12;
+}
+
+#screen-bias-games h2 {
+  position: relative;
+  z-index: 5;
+  max-width: 860px;
+  margin: 0 auto;
+  font-size: clamp(4.2rem, 8vw, 8.2rem);
+  line-height: 0.84;
+  text-shadow:
+    0 2px 18px rgba(0, 0, 0, 0.42),
+    0 0 42px rgba(94, 160, 255, 0.14);
+}
+
+#screen-bias-games > .container > .panel > .helper-text {
+  position: relative;
+  z-index: 5;
+  width: min(760px, 84vw);
+  margin: 0 auto 6px;
+  font-size: clamp(1.1rem, 1.3vw, 1.5rem);
+  line-height: 1.6;
+  color: rgba(230, 239, 255, 0.8);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.42);
+}
+
+#screen-bias-games .bias-grid {
+  position: relative;
+  z-index: 8;
+  width: min(1040px, 92vw);
+  margin: 18px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: clamp(16px, 2vw, 26px);
+  align-items: end;
+  transform-style: preserve-3d;
+}
+
+#screen-bias-games .bias-card {
+  min-height: 164px;
+  padding: clamp(16px, 1.8vw, 20px);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 15, 35, 0.18);
+  backdrop-filter: blur(14px) saturate(118%);
+  -webkit-backdrop-filter: blur(14px) saturate(118%);
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 28px rgba(94, 160, 255, 0.14);
+  transform:
+    rotateY(var(--card-rotate, 0deg))
+    translateZ(var(--card-depth, 0px))
+    translateY(var(--card-offset, 0px))
+    scale(var(--card-scale, 1));
+  transform-origin: center bottom;
+  transition:
+    transform 240ms ease,
+    box-shadow 240ms ease,
+    border-color 240ms ease,
+    background 240ms ease;
+}
+
+#screen-bias-games .bias-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, rgba(130, 232, 255, 0.12), transparent 40%),
+    radial-gradient(circle at 50% 100%, rgba(94, 160, 255, 0.16), transparent 58%);
+  opacity: 0.66;
+  pointer-events: none;
+}
+
+#screen-bias-games .bias-card:hover {
+  transform:
+    rotateY(var(--card-rotate, 0deg))
+    translateZ(calc(var(--card-depth, 0px) + 18px))
+    translateY(calc(var(--card-offset, 0px) - 4px))
+    scale(calc(var(--card-scale, 1) * 1.02));
+  border-color: rgba(130, 232, 255, 0.22);
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 38px rgba(130, 232, 255, 0.24);
+}
+
+#screen-bias-games .task-card-top {
+  margin-bottom: 14px;
+}
+
+#screen-bias-games .task-meta h3 {
+  position: relative;
+  z-index: 1;
+  max-width: 11ch;
+  margin: 0 auto 8px;
+  font-size: clamp(2rem, 2.5vw, 3rem);
+  line-height: 0.92;
+  letter-spacing: 0;
+}
+
+#screen-bias-games .task-category {
+  position: relative;
+  z-index: 1;
+  margin: 0 auto;
+  max-width: 20ch;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: rgba(230, 239, 255, 0.74);
+}
+
+#screen-bias-games .bias-card .button {
+  position: relative;
+  z-index: 1;
+  width: auto;
+  height: 48px;
+  max-width: 180px;
+  margin: 8px auto 0;
+  padding: 0 22px;
+  background: rgba(94, 160, 255, 0.16);
+  border-color: rgba(130, 232, 255, 0.18);
+}
+
+#back-bias-games-btn.chamber-back-btn {
+  width: 56px;
+  min-width: 56px;
+  height: 56px;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(10, 15, 35, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.24),
+    0 0 24px rgba(94, 160, 255, 0.14);
+  font-size: 28px;
+  line-height: 1;
+}
+
+#back-bias-games-btn.chamber-back-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(130, 232, 255, 0.2);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.28),
+    0 0 32px rgba(130, 232, 255, 0.22);
+}
+
+@media (max-width: 820px) {
+  #screen-bias-games .panel {
+    height: auto;
+    max-height: calc(100vh - 24px);
+    padding: 94px 18px 28px;
+    transform: none;
+  }
+
+  #screen-bias-games h2 {
+    font-size: clamp(3.4rem, 15vw, 5.4rem);
+  }
+
+  #screen-bias-games .bias-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  #screen-bias-games .bias-card {
+    transform: none;
+    min-height: 156px;
+  }
+
+  #screen-bias-games .bias-card:hover {
+    transform: translateY(-4px) scale(1.02);
+  }
+}
+/* === CHALLENGE SELECTION DOME REFINEMENT END === */

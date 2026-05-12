@@ -31,7 +31,7 @@
   </div>
 
   <main id="app" aria-live="polite">
-    <section class="screen active" id="screen-start">
+    <section class="screen" id="screen-start">
       <div class="container">
         <div class="panel hero-panel">
           <p class="phase-label">Welcome</p>
@@ -124,24 +124,38 @@
 
           <div class="video-actions">
             <button id="replay-instruction-btn" class="button btn ghost" type="button">Replay instruction</button>
-            <button id="continue-to-language-btn" class="button btn primary-btn" type="button">Continue to setup</button>
+            <button id="continue-to-language-btn" class="button btn primary-btn" type="button">Enter chamber</button>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="screen" id="screen-language">
+    <section class="screen active" id="screen-language">
       <div class="container">
-        <div class="panel">
+        <div class="panel language-panel">
           <div class="panel-top">
-            <button id="back-language" class="button btn ghost" type="button">Back</button>
-            <div class="progress-indicator" data-progress>○ ○ ○</div>
+            <button id="back-language" class="button btn ghost" type="button" hidden>Back</button>
+            <div class="progress-indicator">ENTRY PORTAL</div>
           </div>
+          <p class="phase-label">Language</p>
           <h2 data-t="selectLanguage">Select Language</h2>
-          <div class="lang-grid">
-            <button class="button btn lang-btn" data-lang="en" type="button">English</button>
-            <button class="button btn lang-btn" data-lang="es" type="button">Español</button>
-            <button class="button btn lang-btn" data-lang="ca" type="button">Català</button>
+          <p class="helper-text language-helper">Choose your entry portal into the experiment.</p>
+          <div class="lang-grid" role="list" aria-label="Language selection">
+            <button class="lang-btn language-card" data-lang="en" type="button" role="listitem">
+              <span class="language-card-glow" aria-hidden="true"></span>
+              <span class="language-name">English</span>
+              <span class="language-code">EN</span>
+            </button>
+            <button class="lang-btn language-card" data-lang="es" type="button" role="listitem">
+              <span class="language-card-glow" aria-hidden="true"></span>
+              <span class="language-name">Español</span>
+              <span class="language-code">ES</span>
+            </button>
+            <button class="lang-btn language-card" data-lang="ca" type="button" role="listitem">
+              <span class="language-card-glow" aria-hidden="true"></span>
+              <span class="language-name">Català</span>
+              <span class="language-code">CA</span>
+            </button>
           </div>
         </div>
       </div>
@@ -177,7 +191,7 @@
       <div class="container">
         <div class="panel">
           <div class="panel-top">
-            <button id="back-bias-games-btn" class="button btn ghost" type="button">Back</button>
+            <button id="back-bias-games-btn" class="button btn ghost chamber-back-btn" type="button" aria-label="Go back">←</button>
             <div class="progress-indicator">BIAS MODE</div>
           </div>
           <h2>Bias Playground</h2>

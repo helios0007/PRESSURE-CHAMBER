@@ -865,6 +865,13 @@ async function playVideo(videoEl) {
   }
 }
 
+async function enterBiasChamber() {
+  pauseAllVideos();
+  await startSession();
+  loadBiasGames();
+  showScreen("biasGames");
+}
+
 function resetApp() {
   if (currentGenerateController) currentGenerateController.abort();
   pauseAllVideos();
@@ -880,7 +887,8 @@ function resetApp() {
   els.username.value = "";
   updateProgressIndicator();
   applyTranslations();
-  showScreen("start");
+  document.querySelectorAll(".lang-btn").forEach((btn) => btn.classList.remove("is-selected"));
+  showScreen("language");
 }
 
 els.startBtn.addEventListener("click", async () => {
@@ -897,7 +905,8 @@ els.startBtn.addEventListener("click", async () => {
 
 els.skipIntroBtn.addEventListener("click", () => {
   pauseAllVideos();
-  showScreen("instructionChoice");
+  showScreen("instructionVideo");
+  playVideo(els.instructionVideo);
 });
 
 els.replayIntroBtn.addEventListener("click", async () => {
@@ -906,11 +915,13 @@ els.replayIntroBtn.addEventListener("click", async () => {
 
 els.continueFromIntroBtn.addEventListener("click", () => {
   pauseAllVideos();
-  showScreen("instructionChoice");
+  showScreen("instructionVideo");
+  playVideo(els.instructionVideo);
 });
 
 els.introVideo.addEventListener("ended", () => {
-  showScreen("instructionChoice");
+  showScreen("instructionVideo");
+  playVideo(els.instructionVideo);
 });
 
 els.playInstructionBtn.addEventListener("click", async () => {
@@ -918,35 +929,35 @@ els.playInstructionBtn.addEventListener("click", async () => {
   await playVideo(els.instructionVideo);
 });
 
-els.skipToSetupBtn.addEventListener("click", () => {
-  pauseAllVideos();
-  showScreen("language");
+els.skipToSetupBtn.addEventListener("click", async () => {
+  await enterBiasChamber();
 });
 
 els.backInstructionChoiceBtn.addEventListener("click", () => {
   pauseAllVideos();
-  showScreen("instructionChoice");
+  showScreen("introVideo");
 });
 
 els.replayInstructionBtn.addEventListener("click", async () => {
   await playVideo(els.instructionVideo);
 });
 
-els.continueToLanguageBtn.addEventListener("click", () => {
-  pauseAllVideos();
-  showScreen("language");
+els.continueToLanguageBtn.addEventListener("click", async () => {
+  await enterBiasChamber();
 });
 
-els.instructionVideo.addEventListener("ended", () => {
-  showScreen("language");
+els.instructionVideo.addEventListener("ended", async () => {
+  await enterBiasChamber();
 });
 
 document.querySelectorAll(".lang-btn").forEach((btn) => {
   btn.addEventListener("click", async () => {
+    document.querySelectorAll(".lang-btn").forEach((item) => item.classList.remove("is-selected"));
+    btn.classList.add("is-selected");
     appState.language = btn.dataset.lang;
     applyTranslations();
-    await startSession();
-    showScreen("hub");
+    await delay(260);
+    showScreen("start");
   });
 });
 
@@ -977,8 +988,8 @@ els.viewLeaderboardBtn.addEventListener("click", async () => {
 
 els.resetBtn.addEventListener("click", resetApp);
 
-els.backLanguage.addEventListener("click", () => showScreen("instructionChoice"));
-els.backHub.addEventListener("click", () => showScreen("language"));
+els.backLanguage.addEventListener("click", () => showScreen("language"));
+els.backHub.addEventListener("click", () => showScreen("biasGames"));
 els.backPrompt.addEventListener("click", () => showScreen("hub"));
 els.backResult.addEventListener("click", () => showScreen("hub"));
 els.backFinal.addEventListener("click", () => showScreen("hub"));
@@ -1264,6 +1275,10 @@ function renderBiasGames() {
   BIAS_GAMES.forEach((game, index) => {
     const card = document.createElement("article");
     card.className = "card bias-card";
+    card.style.setProperty("--card-rotate", `${(index - 1) * 12}deg`);
+    card.style.setProperty("--card-depth", index === 1 ? "52px" : "-34px");
+    card.style.setProperty("--card-offset", `${(index - 1) * -10}px`);
+    card.style.setProperty("--card-scale", index === 1 ? "1.04" : "0.96");
     card.innerHTML = `
       <div class="task-card-top">
         <div class="task-meta">
@@ -1832,6 +1847,21 @@ function init3DScene() {
   });
 }
 
+function initBiasGamesParallax() {
+  const chamberScreen = screens.biasGames;
+  if (!chamberScreen) return;
+
+  document.addEventListener("mousemove", (event) => {
+    const x = event.clientX / window.innerWidth - 0.5;
+    const y = event.clientY / window.innerHeight - 0.5;
+    chamberScreen.style.setProperty("--bias-parallax-x", `${x * 18}px`);
+    chamberScreen.style.setProperty("--bias-parallax-y", `${y * 14}px`);
+    chamberScreen.style.setProperty("--bias-tilt-x", `${y * -4}deg`);
+    chamberScreen.style.setProperty("--bias-tilt-y", `${x * 6}deg`);
+  });
+}
+
 // Initialize 3D scene when DOM is ready
 document.addEventListener('DOMContentLoaded', init3DScene);
+document.addEventListener("DOMContentLoaded", initBiasGamesParallax);
 // === 3D CINEMATIC BACKGROUND SYSTEM END ===
