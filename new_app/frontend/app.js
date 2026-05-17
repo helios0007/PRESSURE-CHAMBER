@@ -7,7 +7,6 @@
   scores: {},
   currentTask: null,
   total: 0,
-  showOverlayUI: true,
 };
 
 const screens = {
@@ -28,9 +27,6 @@ const screens = {
 const els = {
   username: document.getElementById("username"),
   startBtn: document.getElementById("start-btn"),
-
-  cinematicToggleBtn: document.getElementById("cinematic-toggle-btn"),
-  toggleIcon: document.getElementById("toggle-icon"),
 
   skipIntroBtn: document.getElementById("skip-intro-btn"),
   replayIntroBtn: document.getElementById("replay-intro-btn"),
@@ -76,25 +72,9 @@ const els = {
   backResult: document.getElementById("back-result"),
   backFinal: document.getElementById("back-final"),
   backLeaderboard: document.getElementById("back-leaderboard"),
-  openBiasPreviewBtn: document.getElementById("open-bias-preview-btn"),
   openBiasPlaygroundBtn: document.getElementById("open-bias-playground-btn"),
   backBiasGamesBtn: document.getElementById("back-bias-games-btn"),
-  backBiasPlayBtn: document.getElementById("back-bias-play-btn"),
   biasGamesGrid: document.getElementById("bias-games-grid"),
-  biasPlayTitle: document.getElementById("bias-play-title"),
-  biasPlayPrompt: document.getElementById("bias-play-prompt"),
-  toggleBiasBtn: document.getElementById("toggle-bias-btn"),
-  biasVideo: document.getElementById("bias-video"),
-  biasCanvas: document.getElementById("bias-canvas"),
-  biasFallbackImage: document.getElementById("bias-fallback-image"),
-  biasExplanation: document.getElementById("bias-explanation"),
-  biasFeedback: document.getElementById("bias-feedback"),
-  biasExplainBtn: document.getElementById("bias-explain-btn"),
-  biasInfoOverlay: document.getElementById("bias-info-overlay"),
-  biasInfoWhat: document.getElementById("bias-info-what"),
-  biasInfoWhy: document.getElementById("bias-info-why"),
-  biasInfoImpact: document.getElementById("bias-info-impact"),
-  closeBiasInfoBtn: document.getElementById("close-bias-info-btn"),
 
   loadingOverlay: document.getElementById("loading-overlay"),
 };
@@ -118,19 +98,6 @@ const BIAS_DATA_PATH = "/data/tasks_2.json";
 appState.biasGames = [];
 appState.currentBiasGame = null;
 appState.biasModeActive = false;
-appState.cameraStream = null;
-appState.renderLoopId = null;
-
-function safeLoadImage(imgEl, src) {
-  if (!imgEl) return;
-  const source = src || PLACEHOLDER_IMAGE;
-  imgEl.onerror = () => {
-    if (imgEl.src !== PLACEHOLDER_IMAGE) {
-      imgEl.src = PLACEHOLDER_IMAGE;
-    }
-  };
-  imgEl.src = source;
-}
 
 async function loadBiasGames() {
   try {
@@ -159,7 +126,7 @@ function renderBiasGames() {
   if (!appState.biasGames.length) {
     const message = document.createElement("p");
     message.className = "helper-text";
-    message.textContent = "Bias games are not available right now.";
+    message.textContent = t("biasGamesUnavailable");
     els.biasGamesGrid.appendChild(message);
     return;
   }
@@ -172,10 +139,10 @@ function renderBiasGames() {
         <div class="task-meta">
           <h3>${game.title}</h3>
           <p class="task-category">${game.instruction}</p>
-          <p class="task-bias">Bias: ${game.bias}</p>
+          <p class="task-bias">${t("biasPrefix")} ${game.bias}</p>
         </div>
       </div>
-      <button class="button btn primary-btn" type="button">Play</button>
+      <button class="button btn primary-btn" type="button">${t("playBtn")}</button>
     `;
 
     card.querySelector("button").addEventListener("click", () => openBiasGame(game));
@@ -212,339 +179,9 @@ function openBiasGame(game) {
   els.promptInstruction.textContent = appState.currentTask.instruction;
   els.promptInput.value = "";
   els.charCounter.textContent = "0/200";
-  if (els.openBiasPreviewBtn) {
-    els.openBiasPreviewBtn.hidden = false;
-  }
-
   showScreen("prompt");
 }
 
-function getBiasImpactText(filterType) {
-  switch (filterType) {
-    case "occlusion":
-      return "Missing data bias can make the model overlook important context when part of the input is hidden.";
-    case "overlay":
-      return "Identity overlay bias makes some attributes feel more important than others, shaping judgment.";
-    case "color":
-      return "A cultural tint can shift meaning and push outputs toward narrow visual stereotypes.";
-    case "blur":
-      return "Idealization bias removes texture, creating outputs that feel unrealistic and less nuanced.";
-    case "spotlight":
-      return "Authority framing biases attention and can make certain ideas seem more valid than others.";
-    case "contrast":
-      return "Simplification bias smooths away noise and complexity, creating a world that feels too easy.";
-    default:
-      return "This bias effect highlights how subtle changes can shape what AI decides is important.";
-  }
-}
-
-function setExplainOverlay(visible) {
-  if (!els.biasInfoOverlay) return;
-  els.biasInfoOverlay.classList.toggle("active", visible);
-  els.biasInfoOverlay.setAttribute("aria-hidden", visible ? "false" : "true");
-
-  if (visible && appState.currentBiasGame) {
-    els.biasInfoWhat.textContent = `What happened: the system is applying ${appState.currentBiasGame.title.toLowerCase()}.`;
-    els.biasInfoWhy.textContent = `Why it happened: ${appState.currentBiasGame.explanation}`;
-    els.biasInfoImpact.textContent = `Real-world impact: ${getBiasImpactText(appState.currentBiasGame.filter_type)}`;
-  }
-}
-
-function updateBiasVisual() {
-  const hasCamera = Boolean(appState.cameraStream && els.biasVideo.srcObject);
-  els.biasVideo.style.opacity = "0";
-  els.biasVideo.style.position = "absolute";
-
-  if (hasCamera) {
-    els.biasFallbackImage.style.opacity = "0";
-    els.biasCanvas.style.opacity = "1";
-    if (!appState.renderLoopId) {
-      startRenderLoop();
-    }
-    return;
-  }
-
-  if (appState.biasModeActive && appState.currentBiasGame) {
-    els.biasFallbackImage.style.opacity = "0";
-    els.biasCanvas.style.opacity = "1";
-    drawStaticBiasFallback(
-      appState.currentBiasGame.biased_image_path || appState.currentBiasGame.neutral_image_path || PLACEHOLDER_IMAGE,
-      appState.currentBiasGame.filter_type
-    );
-    return;
-  }
-
-  els.biasCanvas.style.opacity = "0";
-  els.biasFallbackImage.style.opacity = "1";
-  const source = appState.currentBiasGame?.neutral_image_path;
-  safeLoadImage(els.biasFallbackImage, source || PLACEHOLDER_IMAGE);
-}
-
-function drawStaticBiasFallback(src, filterType) {
-  const img = new Image();
-  img.crossOrigin = "anonymous";
-  img.onload = () => {
-    const canvas = els.biasCanvas;
-    const ctx = canvas.getContext("2d");
-    canvas.width = img.naturalWidth || 640;
-    canvas.height = img.naturalHeight || 480;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.filter = getCanvasFilterForType(filterType);
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    ctx.filter = "none";
-    if (appState.biasModeActive) {
-      drawBiasOverlay(ctx, canvas.width, canvas.height, filterType);
-    }
-  };
-  img.onerror = () => {
-    els.biasCanvas.style.opacity = "0";
-    els.biasFallbackImage.style.opacity = "1";
-    safeLoadImage(els.biasFallbackImage, src || PLACEHOLDER_IMAGE);
-  };
-  img.src = src;
-}
-
-async function startCamera() {
-  stopCamera(false);
-  if (!navigator.mediaDevices?.getUserMedia) {
-    return false;
-  }
-
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: "user", width: 640, height: 480 },
-      audio: false,
-    });
-
-    appState.cameraStream = stream;
-    els.biasVideo.srcObject = stream;
-    els.biasVideo.style.opacity = "0";
-    els.biasVideo.style.position = "absolute";
-    els.biasFallbackImage.style.opacity = "0";
-    els.biasCanvas.style.opacity = "1";
-
-    await els.biasVideo.play();
-    await new Promise((resolve, reject) => {
-      const cleanup = () => {
-        els.biasVideo.onloadedmetadata = null;
-        els.biasVideo.onerror = null;
-      };
-
-      const done = () => {
-        cleanup();
-        resolve();
-      };
-
-      els.biasVideo.onloadedmetadata = done;
-      els.biasVideo.onerror = (error) => {
-        cleanup();
-        reject(error);
-      };
-
-      if (els.biasVideo.readyState >= 1) {
-        done();
-      }
-    });
-
-    els.biasCanvas.width = els.biasVideo.videoWidth || 640;
-    els.biasCanvas.height = els.biasVideo.videoHeight || 480;
-    startRenderLoop();
-    return true;
-  } catch (err) {
-    stopCamera(false);
-    updateBiasVisual();
-    els.biasFeedback.textContent =
-      "Camera access is unavailable. Use localhost/HTTPS and allow camera permission to view the bias preview.";
-    console.warn("Bias preview camera failed:", err);
-    return false;
-  }
-}
-
-function stopCamera(clearBiasMode = true) {
-  if (appState.renderLoopId) {
-    cancelAnimationFrame(appState.renderLoopId);
-    appState.renderLoopId = null;
-  }
-
-  if (appState.cameraStream) {
-    appState.cameraStream.getTracks().forEach((track) => track.stop());
-    appState.cameraStream = null;
-  }
-
-  if (els.biasVideo) {
-    els.biasVideo.srcObject = null;
-    els.biasVideo.style.opacity = "0";
-    els.biasVideo.style.position = "absolute";
-  }
-
-  if (clearBiasMode) {
-    appState.biasModeActive = false;
-  }
-}
-
-function startRenderLoop() {
-  const canvas = els.biasCanvas;
-  const video = els.biasVideo;
-  if (!canvas || !video) return;
-
-  const ctx = canvas.getContext("2d");
-  let isRendering = false;
-
-  function renderFrame() {
-    if (!video.videoWidth || !video.videoHeight) {
-      appState.renderLoopId = requestAnimationFrame(renderFrame);
-      return;
-    }
-
-    if (!isRendering) {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      isRendering = true;
-    }
-
-    const filter = appState.biasModeActive
-      ? getCanvasFilterForType(appState.currentBiasGame?.filter_type)
-      : "none";
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.filter = filter;
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    ctx.filter = "none";
-
-    if (appState.biasModeActive) {
-      drawBiasOverlay(ctx, canvas.width, canvas.height, appState.currentBiasGame?.filter_type);
-    }
-
-    appState.renderLoopId = requestAnimationFrame(renderFrame);
-  }
-
-  if (appState.renderLoopId) {
-    cancelAnimationFrame(appState.renderLoopId);
-  }
-
-  appState.renderLoopId = requestAnimationFrame(renderFrame);
-}
-
-function getCanvasFilterForType(type) {
-  switch (type) {
-    case "occlusion":
-      return "contrast(0.92) brightness(0.92)";
-    case "overlay":
-      return "saturate(0.9) contrast(0.95)";
-    case "color":
-      return "sepia(0.16) saturate(1.2)";
-    case "blur":
-      return "blur(6px)";
-    case "spotlight":
-      return "brightness(0.88) contrast(1.1)";
-    case "contrast":
-      return "contrast(1.35) saturate(1.15)";
-    default:
-      return "none";
-  }
-}
-
-function drawBiasOverlay(ctx, width, height, filterType) {
-  ctx.save();
-
-  switch (filterType) {
-    case "occlusion":
-      ctx.fillStyle = "rgba(0, 0, 0, 0.24)";
-      for (let i = 0; i < 5; i += 1) {
-        const x = Math.random() * width * 0.5;
-        const y = Math.random() * height * 0.8;
-        ctx.fillRect(x, y, width * 0.2, height * 0.08);
-      }
-      break;
-    case "overlay":
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.75)";
-      ctx.lineWidth = 14;
-      ctx.strokeRect(12, 12, width - 24, height - 24);
-      ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
-      ctx.fillRect(0, 0, width, height);
-      break;
-    case "color":
-      ctx.fillStyle = "rgba(240, 160, 80, 0.14)";
-      ctx.fillRect(0, 0, width, height);
-      break;
-    case "spotlight": {
-      const gradient = ctx.createRadialGradient(
-        width * 0.5,
-        height * 0.35,
-        width * 0.08,
-        width * 0.5,
-        height * 0.35,
-        width * 0.85
-      );
-      gradient.addColorStop(0, "rgba(255,255,255,0)");
-      gradient.addColorStop(0.7, "rgba(0,0,0,0.35)");
-      gradient.addColorStop(1, "rgba(0,0,0,0.78)");
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
-      break;
-    }
-    case "blur":
-      ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
-      ctx.fillRect(0, 0, width, height);
-      break;
-    case "contrast":
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-      ctx.lineWidth = 1;
-      for (let x = 0; x < width; x += width / 8) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, height);
-        ctx.stroke();
-      }
-      for (let y = 0; y < height; y += height / 8) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
-        ctx.stroke();
-      }
-      break;
-    default:
-      break;
-  }
-
-  ctx.restore();
-}
-
-async function toggleBiasMode() {
-  const enableBias = !appState.biasModeActive;
-  if (enableBias) {
-    appState.biasModeActive = true;
-    els.toggleBiasBtn.disabled = true;
-    els.toggleBiasBtn.textContent = "Bias OFF";
-    const started = await startCamera();
-    els.toggleBiasBtn.disabled = false;
-
-    if (!started) {
-      els.biasFeedback.textContent =
-        "Camera access is unavailable. Showing a preview image with the bias effect instead.";
-      updateBiasVisual();
-    }
-    updateBiasFeedback();
-    return;
-  }
-
-  appState.biasModeActive = false;
-  els.toggleBiasBtn.textContent = "Bias ON";
-  stopCamera();
-  updateBiasVisual();
-  updateBiasFeedback();
-}
-
-function updateBiasFeedback() {
-  if (!appState.currentBiasGame) {
-    els.biasFeedback.textContent = "";
-    return;
-  }
-
-  els.biasFeedback.textContent = appState.biasModeActive
-    ? "Bias filter active. Notice how assumptions change the result."
-    : "Bias filter inactive. This is the baseline view.";
-}
 
 function initializeBiasPlayground() {
   els.openBiasPlaygroundBtn?.addEventListener("click", () => {
@@ -556,52 +193,7 @@ function initializeBiasPlayground() {
     showScreen("hub");
   });
 
-  els.backBiasPlayBtn?.addEventListener("click", () => {
-    stopCamera();
-    showScreen("biasGames");
-  });
-
-  els.openBiasPreviewBtn?.addEventListener("click", () => {
-    if (!appState.currentTask?.category || appState.currentTask.category !== "Bias Playground") {
-      return;
-    }
-    appState.currentBiasGame = appState.currentTask;
-    els.biasPlayTitle.textContent = appState.currentTask.title;
-    els.biasPlayPrompt.textContent = appState.currentTask.instruction || appState.currentTask.prompt;
-    els.biasExplanation.textContent = appState.currentTask.explanation || "Explore the bias overlay and how it changes the image.";
-    els.biasFeedback.textContent = "Press Bias ON to start the camera bias preview.";
-    els.toggleBiasBtn.textContent = "Bias ON";
-    els.biasInfoWhat.textContent = "";
-    els.biasInfoWhy.textContent = "";
-    els.biasInfoImpact.textContent = "";
-    updateBiasVisual();
-    showScreen("biasPlay");
-    // Ensure overlay UI is visible by default
-    appState.showOverlayUI = true;
-    const overlayElements = document.querySelectorAll('.overlay-ui');
-    overlayElements.forEach(el => el.classList.remove('hidden'));
-    els.toggleIcon.textContent = 'Hide UI';
-    els.cinematicToggleBtn.title = 'Hide UI Overlay';
-  });
-
-  els.toggleBiasBtn?.addEventListener("click", toggleBiasMode);
-  els.biasExplainBtn?.addEventListener("click", () => setExplainOverlay(true));
-  els.closeBiasInfoBtn?.addEventListener("click", () => setExplainOverlay(false));
-
-  els.cinematicToggleBtn?.addEventListener("click", toggleOverlayUI);
-
-  document.addEventListener("keydown", (event) => {
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "i") {
-      event.preventDefault();
-      setExplainOverlay(true);
-    }
-  });
-
-  window.addEventListener("visibilitychange", () => {
-    if (document.visibilityState !== "visible") {
-      stopCamera();
-    }
-  });
+  initBiasCardDelegation();
 }
 
 initializeBiasPlayground();
@@ -627,6 +219,10 @@ function applyTranslations() {
   document.querySelectorAll("[data-t]").forEach((el) => {
     el.textContent = t(el.dataset.t);
   });
+  document.querySelectorAll("[data-t-placeholder]").forEach((el) => {
+    el.placeholder = t(el.dataset.tPlaceholder);
+  });
+  updateLangSwitcher();
 }
 
 function updateProgressIndicator() {
@@ -644,7 +240,25 @@ function delay(ms) {
 async function loadTranslations() {
   const res = await fetch("/data/translations.json");
   appState.translations = await res.json();
+  loadLanguageFromStorage();
   applyTranslations();
+}
+
+function loadLanguageFromStorage() {
+  const saved = localStorage.getItem("pc_language");
+  if (saved && appState.translations?.[saved]) {
+    appState.language = saved;
+  }
+}
+
+function persistLanguage(lang) {
+  localStorage.setItem("pc_language", lang);
+}
+
+function updateLangSwitcher() {
+  document.querySelectorAll(".lang-pill").forEach((pill) => {
+    pill.classList.toggle("active", pill.dataset.lang === appState.language);
+  });
 }
 
 async function startSession() {
@@ -697,7 +311,7 @@ async function submitPrompt() {
 
   const prompt = els.promptInput.value.trim();
   if (!prompt) {
-    alert("Prompt cannot be empty.");
+    alert(t("alertEmptyPrompt"));
     return;
   }
 
@@ -775,10 +389,10 @@ async function submitPrompt() {
     }
 
     if (isBiasPlay) {
-      els.resultTaskId.textContent = `Bias Mode Result — ${payload.task_title || appState.currentTask.title}`;
+      els.resultTaskId.textContent = `${t("biasModeResult")} — ${payload.task_title || appState.currentTask.title}`;
       els.resultScore.classList.add("score-bias-mode");
     } else {
-      els.resultTaskId.textContent = `Task ID: ${payload.task_id} - ${payload.task_title || appState.currentTask.title}`;
+      els.resultTaskId.textContent = `${t("taskIdLabel")}: ${payload.task_id} - ${payload.task_title || appState.currentTask.title}`;
       els.resultScore.classList.remove("score-bias-mode");
     }
 
@@ -790,7 +404,7 @@ async function submitPrompt() {
       els.scoreLine.style.display = "block";
       els.resultScore.textContent = `${score}`;
       applyScoreColor(score);
-      els.scoreLine.textContent = `Similarity Score: ${score}`;
+      els.scoreLine.textContent = `${t("similarityScore")}: ${score}`;
     }
     if (isBiasPlay) {
       const data = biasExplanationData[appState.currentTask.filterType] || {
@@ -798,18 +412,18 @@ async function submitPrompt() {
         description: "",
       };
 
-      els.biasLine.textContent = `Bias Category: ${data.title}`;
+      els.biasLine.textContent = `${t("biasCategory")}: ${data.title}`;
       els.explanationLine.textContent = data.description;
     } else {
-      els.biasLine.textContent = `Bias Category: ${payload.bias || appState.currentTask.bias || "Bias Pattern"}`;
+      els.biasLine.textContent = `${t("biasCategory")}: ${payload.bias || appState.currentTask.bias || "Bias Pattern"}`;
       els.explanationLine.textContent = payload.explanation || "This output reflects embedded data bias patterns.";
     }
-    els.promptLine.textContent = `Prompt used: ${payload.user_prompt || prompt}`;
+    els.promptLine.textContent = `${t("promptUsed")}: ${payload.user_prompt || prompt}`;
 
     showScreen("result");
   } catch (err) {
     if (err.name !== "AbortError") {
-      alert(err.message || "Image generation failed. Please try again.");
+      alert(err.message || t("alertGenerationFailed"));
     }
     showScreen("prompt");
   } finally {
@@ -830,7 +444,7 @@ function showFinal() {
   appState.total = total;
   els.finalUser.textContent = appState.userName;
   els.finalList.innerHTML = rows.map((row) => `<p>${row.title}: ${row.score}</p>`).join("");
-  els.finalTotal.textContent = `Total Score: ${total}`;
+  els.finalTotal.textContent = `${t("totalScore")}: ${total}`;
   showScreen("final");
 }
 
@@ -888,40 +502,39 @@ function resetApp() {
   updateProgressIndicator();
   applyTranslations();
   document.querySelectorAll(".lang-btn").forEach((btn) => btn.classList.remove("is-selected"));
+  updateLangSwitcher();
   showScreen("language");
 }
 
 els.startBtn.addEventListener("click", async () => {
   const name = els.username.value.trim();
   if (!name) {
-    alert("Username must not be empty.");
+    alert(t("alertEmptyUsername"));
     return;
   }
 
   appState.userName = name;
-  showScreen("introVideo");
-  await playVideo(els.introVideo);
+  showScreen("instructionChoice");
 });
 
 els.skipIntroBtn.addEventListener("click", () => {
+  if (dismissScreensaver()) return;
   pauseAllVideos();
-  showScreen("instructionVideo");
-  playVideo(els.instructionVideo);
+  showScreen("language");
 });
 
-els.replayIntroBtn.addEventListener("click", async () => {
+els.replayIntroBtn?.addEventListener("click", async () => {
   await playVideo(els.introVideo);
 });
 
-els.continueFromIntroBtn.addEventListener("click", () => {
+els.continueFromIntroBtn?.addEventListener("click", () => {
+  if (dismissScreensaver()) return;
   pauseAllVideos();
-  showScreen("instructionVideo");
-  playVideo(els.instructionVideo);
+  showScreen("language");
 });
 
-els.introVideo.addEventListener("ended", () => {
-  showScreen("instructionVideo");
-  playVideo(els.instructionVideo);
+els.introVideo?.addEventListener("ended", () => {
+  showScreen("language");
 });
 
 els.playInstructionBtn.addEventListener("click", async () => {
@@ -935,7 +548,7 @@ els.skipToSetupBtn.addEventListener("click", async () => {
 
 els.backInstructionChoiceBtn.addEventListener("click", () => {
   pauseAllVideos();
-  showScreen("introVideo");
+  showScreen("start");
 });
 
 els.replayInstructionBtn.addEventListener("click", async () => {
@@ -955,9 +568,18 @@ document.querySelectorAll(".lang-btn").forEach((btn) => {
     document.querySelectorAll(".lang-btn").forEach((item) => item.classList.remove("is-selected"));
     btn.classList.add("is-selected");
     appState.language = btn.dataset.lang;
+    persistLanguage(appState.language);
     applyTranslations();
     await delay(260);
     showScreen("start");
+  });
+});
+
+document.querySelectorAll(".lang-pill").forEach((pill) => {
+  pill.addEventListener("click", () => {
+    appState.language = pill.dataset.lang;
+    persistLanguage(appState.language);
+    applyTranslations();
   });
 });
 
@@ -990,7 +612,7 @@ els.resetBtn.addEventListener("click", resetApp);
 
 els.backLanguage.addEventListener("click", () => showScreen("language"));
 els.backHub.addEventListener("click", () => showScreen("biasGames"));
-els.backPrompt.addEventListener("click", () => showScreen("hub"));
+els.backPrompt.addEventListener("click", () => showScreen(appState.currentBiasGame ? "biasGames" : "hub"));
 els.backResult.addEventListener("click", () => showScreen("hub"));
 els.backFinal.addEventListener("click", () => showScreen("hub"));
 els.backLeaderboard.addEventListener("click", () => showScreen("final"));
@@ -1146,11 +768,14 @@ const BIAS_GAMES = [
   },
 ];
 
-let biasModeActive = false;
-let currentFilter = null;
-let isRendering = false;
-let biasCameraStream = null;
-let biasAnimationFrame = null;
+const BIAS_PREVIEW_IMAGES = [
+  "/images/new_test_target/bias_1.jpeg",
+  "/images/new_test_target/bias_2.AVIF",
+  "/images/new_test_target/bias_1.jpeg",
+  "/images/new_test_target/bias_4.png",
+  "/images/new_test_target/bias_1.jpeg",
+  "/images/new_test_target/bias_1.jpeg",
+];
 
 const biasLandscapeShowScreen = showScreen;
 showScreen = function showLandscapeScreen(name) {
@@ -1275,22 +900,52 @@ function renderBiasGames() {
   BIAS_GAMES.forEach((game, index) => {
     const card = document.createElement("article");
     card.className = "card bias-card";
-    card.style.setProperty("--card-rotate", `${(index - 1) * 12}deg`);
-    card.style.setProperty("--card-depth", index === 1 ? "52px" : "-34px");
-    card.style.setProperty("--card-offset", `${(index - 1) * -10}px`);
-    card.style.setProperty("--card-scale", index === 1 ? "1.04" : "0.96");
+    card.dataset.biasIndex = index;
     card.innerHTML = `
       <div class="task-card-top">
         <div class="task-meta">
-          <h3>Challenge ${index + 1}</h3>
-          <p class="task-category">Generate the target image.</p>
+          <h3>${t("challengePrefix")} ${index + 1}</h3>
+          <p class="task-category">${t("challengeInstruction")}</p>
         </div>
       </div>
-      <button class="button btn primary-btn">Play</button>
+      <button class="button btn primary-btn" type="button">${t("playBtn")}</button>
     `;
-
-    card.querySelector("button").addEventListener("click", () => openBiasGame(game, index));
     els.biasGamesGrid.appendChild(card);
+  });
+}
+
+function initBiasCardDelegation() {
+  if (!els.biasGamesGrid) return;
+
+  // Primary: standard delegation — works for center cards where 3D hit-testing succeeds
+  els.biasGamesGrid.addEventListener("click", (e) => {
+    const card = e.target.closest(".bias-card");
+    if (!card) return;
+    e.stopPropagation(); // prevent document fallback from also firing
+    const index = parseInt(card.dataset.biasIndex, 10);
+    if (!isNaN(index) && BIAS_GAMES[index]) openBiasGame(BIAS_GAMES[index], index);
+  });
+
+  // Fallback: document-level listener using getBoundingClientRect() for side cards where
+  // the browser's 3D hit-test may miss due to rotateY + translateZ inside a preserve-3d context.
+  // getBoundingClientRect() always returns the actual rendered 2D bounding box.
+  document.addEventListener("click", (e) => {
+    const screen = document.getElementById("screen-bias-games");
+    if (!screen?.classList.contains("active")) return;
+    const cards = els.biasGamesGrid.querySelectorAll(".bias-card");
+    for (const card of cards) {
+      const rect = card.getBoundingClientRect();
+      if (
+        e.clientX >= rect.left && e.clientX <= rect.right &&
+        e.clientY >= rect.top && e.clientY <= rect.bottom
+      ) {
+        const index = parseInt(card.dataset.biasIndex, 10);
+        if (!isNaN(index) && BIAS_GAMES[index]) {
+          openBiasGame(BIAS_GAMES[index], index);
+          return;
+        }
+      }
+    }
   });
 }
 
@@ -1299,7 +954,6 @@ async function openBiasGame(game, index) {
   const promptCaption = await getBiasCaption(game, index);
 
   appState.currentBiasGame = game;
-  currentFilter = game.filterType;
   appState.currentTask = {
     ...game,
     id: game.mappedTaskId,
@@ -1309,7 +963,7 @@ async function openBiasGame(game, index) {
   };
 
   if (appState.currentTask.category === "Bias Playground") {
-    els.promptTitle.textContent = "Bias Test";
+    els.promptTitle.textContent = t("biasTestTitle");
     els.promptTaskId.textContent = "";
     els.promptInstruction.textContent = promptCaption;
   } else {
@@ -1319,261 +973,23 @@ async function openBiasGame(game, index) {
   }
   els.promptInput.value = "";
   els.charCounter.textContent = "0/200";
-  if (els.openBiasPreviewBtn) {
-    els.openBiasPreviewBtn.hidden = false;
-  }
-
   updatePromptTargetImage();
-  showScreen("prompt");
+  const preview = document.getElementById("challenge-preview");
+  const previewImg = document.getElementById("challenge-preview-img");
+  previewImg.src = BIAS_PREVIEW_IMAGES[index];
+  preview.style.opacity = "1";
+  preview.style.display = "block";
+  setTimeout(() => {
+    preview.style.transition = "opacity 800ms ease";
+    preview.style.opacity = "0";
+    showScreen("prompt");
+    setTimeout(() => {
+      preview.style.display = "none";
+      preview.style.transition = "";
+    }, 800);
+  }, 4000);
 }
 
-async function startCamera() {
-  stopCamera(false);
-
-  const video = els.biasVideo;
-  const canvas = els.biasCanvas;
-  if (!video || !canvas || !navigator.mediaDevices?.getUserMedia) {
-    return false;
-  }
-
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    biasCameraStream = stream;
-    appState.cameraStream = stream;
-    video.srcObject = stream;
-
-    await new Promise((resolve) => {
-      video.onloadedmetadata = resolve;
-    });
-
-    video.style.opacity = 0;
-    canvas.style.opacity = 1;
-    if (els.biasFallbackImage) {
-      els.biasFallbackImage.style.opacity = 0;
-    }
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-
-    await video.play();
-    startRenderLoop();
-    return true;
-  } catch (err) {
-    stopCamera(false);
-    if (els.biasFeedback) {
-      els.biasFeedback.textContent = "Camera access is unavailable. Allow camera permission to view the bias disturbance.";
-    }
-    console.warn("Bias camera failed:", err);
-    return false;
-  }
-}
-
-function stopCamera(resetBiasMode = true) {
-  isRendering = false;
-
-  if (biasAnimationFrame) {
-    cancelAnimationFrame(biasAnimationFrame);
-    biasAnimationFrame = null;
-  }
-
-  if (biasCameraStream) {
-    biasCameraStream.getTracks().forEach((track) => track.stop());
-    biasCameraStream = null;
-  }
-
-  if (appState.cameraStream) {
-    appState.cameraStream.getTracks().forEach((track) => track.stop());
-    appState.cameraStream = null;
-  }
-
-  if (els.biasVideo) {
-    els.biasVideo.srcObject = null;
-    els.biasVideo.style.opacity = 0;
-  }
-
-  if (els.biasCanvas && resetBiasMode) {
-    els.biasCanvas.style.opacity = 0;
-  }
-
-  if (els.biasFallbackImage && resetBiasMode) {
-    els.biasFallbackImage.style.opacity = 1;
-  }
-
-  if (resetBiasMode) {
-    biasModeActive = false;
-    appState.biasModeActive = false;
-  }
-}
-
-function startRenderLoop() {
-  if (isRendering) return;
-
-  const video = els.biasVideo;
-  const canvas = els.biasCanvas;
-  if (!video || !canvas) return;
-
-  const ctx = canvas.getContext("2d");
-  isRendering = true;
-
-  function render() {
-    if (!isRendering) return;
-
-    if (video.videoWidth && video.videoHeight) {
-      if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-      }
-
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      if (biasModeActive) {
-        applyBiasFilter(ctx, canvas.width, canvas.height, currentFilter);
-      }
-    }
-
-    biasAnimationFrame = requestAnimationFrame(render);
-  }
-
-  render();
-}
-
-function toggleBias() {
-  biasModeActive = !biasModeActive;
-  appState.biasModeActive = biasModeActive;
-
-  if (biasModeActive) {
-    if (els.toggleBiasBtn) els.toggleBiasBtn.textContent = "Bias OFF";
-    startCamera();
-  } else {
-    if (els.toggleBiasBtn) els.toggleBiasBtn.textContent = "Bias ON";
-    stopCamera();
-  }
-}
-
-function toggleBiasMode() {
-  toggleBias();
-}
-
-function toggleOverlayUI() {
-  appState.showOverlayUI = !appState.showOverlayUI;
-  const overlayElements = document.querySelectorAll('.overlay-ui');
-  overlayElements.forEach(el => {
-    if (appState.showOverlayUI) {
-      el.classList.remove('hidden');
-      els.toggleIcon.textContent = 'Hide UI';
-      els.cinematicToggleBtn.title = 'Hide UI Overlay';
-    } else {
-      el.classList.add('hidden');
-      els.toggleIcon.textContent = 'Show UI';
-      els.cinematicToggleBtn.title = 'Show UI Overlay';
-    }
-  });
-}
-
-function rightHandBias(ctx, w, h) {
-  ctx.fillStyle = "rgba(0,0,0,0.6)";
-  for (let i = 0; i < 8; i += 1) {
-    ctx.fillRect(Math.random() * w * 0.5, Math.random() * h, 60, 40);
-  }
-}
-
-function genderBias(ctx, w, h) {
-  ctx.drawImage(ctx.canvas, 0, 0, w, h, 20, 10, w * 0.95, h * 0.95);
-  ctx.fillStyle = "red";
-  ctx.font = "32px Inter, sans-serif";
-  ctx.fillText("ASSUMED", 20, 40);
-}
-
-function languageBias(ctx, w, h) {
-  ctx.globalAlpha = 0.6;
-  ctx.drawImage(ctx.canvas, 15, 0);
-  ctx.drawImage(ctx.canvas, -15, 0);
-  ctx.globalAlpha = 1;
-}
-
-function architectureBias(ctx, w, h) {
-  for (let i = 0; i < 3; i += 1) {
-    ctx.drawImage(ctx.canvas, 0, 0, w, h);
-  }
-}
-
-function authorityBias(ctx, w, h) {
-  ctx.fillStyle = "rgba(0,0,0,0.7)";
-  ctx.fillRect(0, 0, w, h);
-
-  ctx.globalCompositeOperation = "destination-out";
-  ctx.beginPath();
-  ctx.arc(w / 2, h / 2, 120, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.globalCompositeOperation = "source-over";
-}
-
-function frictionlessBias(ctx, w, h) {
-  const img = ctx.getImageData(0, 0, w, h);
-  const d = img.data;
-
-  for (let i = 0; i < d.length; i += 4) {
-    const avg = (d[i] + d[i + 1] + d[i + 2]) / 3;
-    d[i] = avg;
-    d[i + 1] = avg;
-    d[i + 2] = avg;
-  }
-
-  ctx.putImageData(img, 0, 0);
-}
-
-function applyBiasFilter(ctx, w, h, type) {
-  switch (type) {
-    case "right_hand":
-      rightHandBias(ctx, w, h);
-      break;
-    case "gender":
-      genderBias(ctx, w, h);
-      break;
-    case "language":
-      languageBias(ctx, w, h);
-      break;
-    case "architecture":
-      architectureBias(ctx, w, h);
-      break;
-    case "authority":
-      authorityBias(ctx, w, h);
-      break;
-    case "friction":
-      frictionlessBias(ctx, w, h);
-      break;
-    default:
-      break;
-  }
-
-  if (Math.random() > 0.7) {
-    ctx.drawImage(
-      ctx.canvas,
-      0,
-      0,
-      w,
-      h,
-      Math.random() * 10,
-      Math.random() * 10,
-      w,
-      h
-    );
-  }
-}
-
-els.openBiasPreviewBtn?.addEventListener("click", () => {
-  if (appState.currentTask?.category !== "Bias Playground") return;
-
-  appState.currentBiasGame = appState.currentTask;
-  currentFilter = appState.currentTask.filterType;
-  if (els.biasPlayTitle) els.biasPlayTitle.textContent = appState.currentTask.title;
-  if (els.biasPlayPrompt) els.biasPlayPrompt.textContent = appState.currentTask.instruction;
-  if (els.biasExplanation) els.biasExplanation.textContent = appState.currentTask.explanation;
-  if (els.biasFeedback) els.biasFeedback.textContent = "Press Bias ON to start the camera disturbance.";
-  if (els.toggleBiasBtn) els.toggleBiasBtn.textContent = "Bias ON";
-
-  showScreen("biasPlay");
-});
 // === BIAS LANDSCAPE SYSTEM END ===
 
 // === 3D CINEMATIC BACKGROUND SYSTEM ===
@@ -1865,3 +1281,67 @@ function initBiasGamesParallax() {
 document.addEventListener('DOMContentLoaded', init3DScene);
 document.addEventListener("DOMContentLoaded", initBiasGamesParallax);
 // === 3D CINEMATIC BACKGROUND SYSTEM END ===
+
+// === SCREENSAVER / INACTIVITY SYSTEM ===
+let screensaverTimer = null;
+let screensaverActive = false;
+let screensaverReturnScreen = null;
+const SCREENSAVER_DELAY = 30000;
+
+function getCurrentScreenName() {
+  return Object.entries(screens).find(([, s]) => s?.classList.contains("active"))?.[0] || null;
+}
+
+function activateScreensaver() {
+  const current = getCurrentScreenName();
+  if (current === "introVideo" || els.loadingOverlay?.classList.contains("active")) {
+    scheduleScreensaver();
+    return;
+  }
+  screensaverReturnScreen = current;
+  screensaverActive = true;
+  const introScreen = screens.introVideo;
+  if (introScreen) introScreen.classList.add("screensaver-mode");
+  if (els.introVideo) {
+    els.introVideo.currentTime = 0;
+    els.introVideo.play().catch(() => {});
+  }
+  showScreen("introVideo");
+}
+
+function dismissScreensaver() {
+  if (!screensaverActive) return false;
+  screensaverActive = false;
+  const introScreen = screens.introVideo;
+  if (introScreen) introScreen.classList.remove("screensaver-mode");
+  if (els.introVideo) {
+    els.introVideo.pause();
+    els.introVideo.currentTime = 0;
+  }
+  if (screensaverReturnScreen && screens[screensaverReturnScreen]) {
+    showScreen(screensaverReturnScreen);
+  }
+  screensaverReturnScreen = null;
+  scheduleScreensaver();
+  return true;
+}
+
+function scheduleScreensaver() {
+  clearTimeout(screensaverTimer);
+  screensaverTimer = setTimeout(activateScreensaver, SCREENSAVER_DELAY);
+}
+
+function onUserActivity() {
+  if (screensaverActive) {
+    dismissScreensaver();
+    return;
+  }
+  scheduleScreensaver();
+}
+
+["mousemove", "keydown", "touchmove", "touchstart", "scroll"].forEach((evt) => {
+  document.addEventListener(evt, onUserActivity, { passive: true });
+});
+
+scheduleScreensaver();
+// === SCREENSAVER / INACTIVITY SYSTEM END ===
