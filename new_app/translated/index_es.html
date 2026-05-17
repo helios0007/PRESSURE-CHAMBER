@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pressure Chamber</title>
+  <base href="../frontend/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script>localStorage.setItem('pc_language','es');</script>
+</head>
+<body>
+  <div id="globe-background" class="globe-background" aria-hidden="true"></div>
+  <div class="bg-gradient"></div>
+  <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
+  <div id="background-blobs" aria-hidden="true">
+    <div class="blob blob-main" data-size="900"></div>
+    <div class="blob blob-1 blob-floating" data-size="760"></div>
+    <div class="blob blob-2 blob-floating" data-size="680"></div>
+    <div class="blob blob-3 blob-floating" data-size="520"></div>
+    <div class="blob blob-4 blob-floating" data-size="820"></div>
+    <div class="blob blob-5 blob-floating" data-size="620"></div>
+  </div>
+  <div class="bg-grain"></div>
+
+  <div id="loading-overlay" class="loading-overlay" aria-hidden="true">
+    <div class="panel loading-panel">
+      <p><span data-t="thinking">La IA está pensando</span><span class="thinking-dots" aria-hidden="true"></span></p>
+      <div class="thinking-bar"><span></span></div>
+    </div>
+  </div>
+
+  <main id="app" aria-live="polite">
+    <section class="screen" id="screen-start">
+      <div class="container">
+        <div class="panel hero-panel">
+          <p class="phase-label" data-t="welcomePhase">Bienvenido</p>
+          <h1 data-t="title">Pressure Chamber</h1>
+          <p class="subtitle" data-t="subtitle">Experimento de Sesgo en IA</p>
+          <p class="helper-text hero-copy" data-t="heroCopy">
+            Un experimento interactivo sobre cómo la IA ve el mundo y el sesgo incorporado en sus resultados.
+          </p>
+          <label for="username" data-t="username">Nombre de usuario</label>
+          <input id="username" aria-label="Nombre de usuario" maxlength="30" autocomplete="off"
+            placeholder="Introduce tu nombre" data-t-placeholder="usernamePlaceholder" />
+          <div class="start-actions">
+            <button id="start-btn" class="button btn primary-btn" data-t="start" type="button">Comenzar experiencia</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-intro-video">
+      <div class="container">
+        <div class="panel video-panel">
+          <div class="panel-top">
+            <button id="skip-intro-btn" class="button btn ghost" type="button" data-t="skipIntro">Saltar intro</button>
+            <div class="progress-indicator" data-t="phase1Label">FASE 1</div>
+          </div>
+          <h2 data-t="introVideoTitle">Vídeo de introducción</h2>
+          <p class="helper-text" data-t="introVideoHelper">La intro comienza automáticamente. Si la reproducción se pausa, pulsa play o continúa.</p>
+          <div class="video-shell">
+            <video id="intro-video" class="feature-video" playsinline preload="auto" controls>
+              <source src="media/intro-video.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <div class="video-actions">
+            <button id="replay-intro-btn" class="button btn ghost" type="button" data-t="replayIntro">Repetir intro</button>
+            <button id="continue-from-intro-btn" class="button btn primary-btn" type="button" data-t="continueBtn">Continuar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-instruction-choice">
+      <div class="container">
+        <div class="panel">
+          <p class="phase-label" data-t="phase2Label">Fase 2</p>
+          <h2 data-t="beforeYouEnter">Antes de entrar</h2>
+          <p class="helper-text" data-t="instructionChoiceHelper">Mira el vídeo de instrucciones o continúa directamente a la configuración.</p>
+          <div class="stack-actions">
+            <button id="play-instruction-btn" class="button btn primary-btn" type="button" data-t="playInstructionVideo">Ver vídeo de instrucciones</button>
+            <button id="skip-to-setup-btn" class="button btn ghost" type="button" data-t="skipToSetup">Saltar a la configuración</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-instruction-video">
+      <div class="container">
+        <div class="panel video-panel">
+          <div class="panel-top">
+            <button id="back-instruction-choice-btn" class="button btn ghost" type="button" data-t="back">Volver</button>
+            <div class="progress-indicator" data-t="phase2Progress">FASE 2</div>
+          </div>
+          <h2 data-t="howToPlay">Cómo jugar</h2>
+          <p class="helper-text" data-t="instructionVideoHelper">Mira las instrucciones y luego continúa al juego.</p>
+          <div class="video-shell">
+            <video id="instruction-video" class="feature-video" playsinline preload="metadata" controls>
+              <source src="media/instruction-video.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <div class="video-actions">
+            <button id="replay-instruction-btn" class="button btn ghost" type="button" data-t="replayInstruction">Repetir instrucción</button>
+            <button id="continue-to-language-btn" class="button btn primary-btn" type="button" data-t="enterChamber">Entrar a la cámara</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen active" id="screen-language">
+      <div class="container">
+        <div class="panel language-panel">
+          <div class="panel-top">
+            <button id="back-language" class="button btn ghost" type="button" hidden data-t="back">Volver</button>
+            <div class="progress-indicator">ENTRY PORTAL</div>
+          </div>
+          <p class="phase-label" data-t="languagePhase">Idioma</p>
+          <h2 data-t="selectLanguage">Seleccionar idioma</h2>
+          <p class="helper-text language-helper" data-t="languageHelper">Elige tu portal de entrada al experimento.</p>
+          <div class="lang-grid" role="list" aria-label="Selección de idioma">
+            <button class="lang-btn language-card" data-lang="en" type="button" role="listitem">
+              <span class="language-card-glow" aria-hidden="true"></span>
+              <span class="language-name">English</span>
+              <span class="language-code">EN</span>
+            </button>
+            <button class="lang-btn language-card" data-lang="es" type="button" role="listitem">
+              <span class="language-card-glow" aria-hidden="true"></span>
+              <span class="language-name">Español</span>
+              <span class="language-code">ES</span>
+            </button>
+            <button class="lang-btn language-card" data-lang="ca" type="button" role="listitem">
+              <span class="language-card-glow" aria-hidden="true"></span>
+              <span class="language-name">Català</span>
+              <span class="language-code">CA</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-hub">
+      <div class="container">
+        <div class="panel">
+          <div class="panel-top">
+            <button id="back-hub" class="button btn ghost" type="button" data-t="back">Volver</button>
+            <div class="progress-indicator" data-progress>○ ○ ○</div>
+          </div>
+          <h2 data-t="taskHub">Panel de tareas</h2>
+          <p data-t="chooseTask">Elige una tarea</p>
+          <div id="task-grid" class="task-grid"></div>
+          <div class="bias-playground-entry">
+            <article class="card bias-card bias-intro-card">
+              <div class="task-card-top">
+                <div class="task-meta">
+                  <h3 data-t="biasPlaygroundTitle">Área de sesgos</h3>
+                  <p class="task-category" data-t="biasPlaygroundCategory">Explora visuales de sesgo</p>
+                  <p class="task-bias" data-t="biasPlaygroundMode">Modo independiente</p>
+                </div>
+              </div>
+              <button id="open-bias-playground-btn" class="button btn primary-btn" type="button" data-t="openBiasPlayground">Abrir área de sesgos</button>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-bias-games">
+      <div class="container">
+        <div class="panel">
+          <div class="panel-top">
+            <button id="back-bias-games-btn" class="button btn ghost chamber-back-btn" type="button" aria-label="Volver">←</button>
+          </div>
+          <h2 data-t="biasPlaygroundHeading">Área de sesgos</h2>
+          <p class="helper-text" data-t="biasGamesHelper">Elige un juego de sesgo y observa cómo los supuestos sutiles cambian lo que muestra el modelo.</p>
+          <div id="bias-games-grid" class="bias-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-prompt">
+      <div class="container">
+        <div class="panel overlay-ui">
+          <div class="panel-top">
+            <button id="back-prompt" class="button btn ghost" type="button" data-t="back">Volver</button>
+            <div class="progress-indicator" data-progress>○ ○ ○</div>
+          </div>
+          <div class="prompt-layout">
+            <div class="prompt-left">
+              <img id="prompt-target-image" alt="Imagen objetivo para este prompt" />
+            </div>
+            <div class="prompt-right">
+              <h2 id="prompt-title"></h2>
+              <p id="prompt-task-id"></p>
+              <p id="prompt-instruction"></p>
+              <textarea id="prompt-input" maxlength="200" aria-label="Entrada de prompt"
+                placeholder="Describe la imagen que quieres que genere el modelo..."
+                data-t-placeholder="promptPlaceholder"></textarea>
+              <div class="row">
+                <small id="char-counter">0/200</small>
+                <button id="generate-btn" class="button btn primary-btn" data-t="generate" type="button">Generar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button id="cinematic-toggle-btn" class="cinematic-toggle-btn" type="button" title="Ocultar UI">
+        <span id="toggle-icon">Ocultar UI</span>
+      </button>
+    </section>
+
+    <section class="screen" id="screen-result">
+      <div class="container">
+        <div class="panel">
+          <div class="panel-top">
+            <button id="back-result" class="button btn ghost" type="button" data-t="back">Volver</button>
+            <div class="progress-indicator" data-progress>○ ○ ○</div>
+          </div>
+          <h2 data-t="result">Resultado</h2>
+          <p id="result-task-id"></p>
+          <p id="result-score" class="score score-mid">0</p>
+          <div class="result-split">
+            <div class="result-left">
+              <h3 data-t="targetLabel">Objetivo</h3>
+              <img id="target-image" alt="Imagen objetivo" loading="lazy" />
+            </div>
+            <div class="result-right">
+              <h3 data-t="generatedLabel">Generado</h3>
+              <div class="generated-placeholder">
+                <img id="generated-image" alt="Imagen generada" loading="lazy" />
+              </div>
+            </div>
+          </div>
+          <p id="score-line"></p>
+          <p id="bias-line"></p>
+          <p id="explanation-line"></p>
+          <p id="prompt-line"></p>
+          <button id="back-hub-btn" class="button btn primary-btn" data-t="backToHub" type="button">Volver al panel</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-final">
+      <div class="container">
+        <div class="panel">
+          <div class="panel-top">
+            <button id="back-final" class="button btn ghost" type="button" data-t="back">Volver</button>
+            <div class="progress-indicator" data-progress>○ ○ ○</div>
+          </div>
+          <h2 data-t="finalReport">Informe final</h2>
+          <p id="final-user"></p>
+          <div id="final-list"></div>
+          <p id="final-total"></p>
+          <button id="view-leaderboard-btn" class="button btn primary-btn" data-t="leaderboard" type="button">Clasificación</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-leaderboard">
+      <div class="container">
+        <div class="panel">
+          <div class="panel-top">
+            <button id="back-leaderboard" class="button btn ghost" type="button" data-t="back">Volver</button>
+            <div class="progress-indicator" data-progress>○ ○ ○</div>
+          </div>
+          <h2 data-t="leaderboard">Clasificación</h2>
+          <ol id="leaderboard-list"></ol>
+          <button id="reset-btn" class="button btn ghost" data-t="reset" type="button">Reiniciar</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="lang-switcher" class="lang-switcher" aria-label="Selector de idioma" role="group">
+    <button class="lang-pill" data-lang="en" type="button">EN</button>
+    <button class="lang-pill active" data-lang="es" type="button">ES</button>
+    <button class="lang-pill" data-lang="ca" type="button">CA</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
+  <script src="globe-background.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
