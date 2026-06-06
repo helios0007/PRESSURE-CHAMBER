@@ -1648,13 +1648,31 @@ body.is-bias-chamber-screen .cursor-glow {
   animation: chamberCardFloat 7s ease-in-out infinite, chamberArcCardIn 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Cylindrical monitor arc — 2 rows × 3 cols, only rotateY varies per column */
-#screen-bias-games .bias-card:nth-child(1) { top: 0;     left: -40px;  width: 300px; transform: rotateY(25deg)  translateZ(-60px); animation-delay: 0s,    0ms; }
-#screen-bias-games .bias-card:nth-child(2) { top: 0;     left: 320px;              transform: rotateY(0deg)   translateZ(0px);   animation-delay: -2.5s, 80ms; }
-#screen-bias-games .bias-card:nth-child(3) { top: 0;     left: 680px;  width: 300px; transform: rotateY(-25deg) translateZ(-60px); animation-delay: -4s,   160ms; }
-#screen-bias-games .bias-card:nth-child(4) { top: 210px; left: -40px;  width: 300px; transform: rotateY(25deg)  translateZ(-60px); animation-delay: -1.5s, 240ms; }
-#screen-bias-games .bias-card:nth-child(5) { top: 210px; left: 320px;              transform: rotateY(0deg)   translateZ(0px);   animation-delay: -3.2s, 320ms; }
-#screen-bias-games .bias-card:nth-child(6) { top: 210px; left: 680px;  width: 300px; transform: rotateY(-25deg) translateZ(-60px); animation-delay: -4.8s, 400ms; }
+/* Cylinder wall — position driven by class set in renderBiasGames() */
+#screen-bias-games .bias-card.pos-left {
+  width: 28%;
+  min-height: 165px;
+  transform: perspective(800px) rotateY(14deg) translateZ(0px) scale(0.96);
+  transform-origin: right center;
+  opacity: 0.92;
+  overflow: hidden;
+}
+#screen-bias-games .bias-card.pos-center {
+  width: 30%;
+  min-height: 172px;
+  transform: perspective(800px) translateZ(0px) scale(1);
+  padding: 28px 20px 24px;
+  border-color: rgba(94, 160, 255, 0.45);
+  opacity: 1;
+}
+#screen-bias-games .bias-card.pos-right {
+  width: 28%;
+  min-height: 165px;
+  transform: perspective(800px) rotateY(-14deg) translateZ(0px) scale(0.96);
+  transform-origin: left center;
+  opacity: 0.92;
+  overflow: hidden;
+}
 
 #screen-bias-games .bias-card:hover {
   box-shadow:
@@ -2516,35 +2534,55 @@ h2,
 #screen-bias-games .bias-grid {
   position: relative;
   z-index: 8;
-  display: block;
-  width: 900px;
-  height: 400px;
-  margin: 0 auto;
-  perspective: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+  width: 100%;
+  max-width: 1400px;
+  padding: 0 24px;
+  height: auto;
+  margin: -20px auto 0;
+  perspective: 1000px;
   perspective-origin: 50% 50%;
-  transform-style: preserve-3d;
   pointer-events: auto;
+}
+
+#screen-bias-games .bias-row {
+  display: flex;
   align-items: stretch;
+  justify-content: space-between;
+  gap: 32px;
+  transform-style: preserve-3d;
+  position: relative;
+  width: 96%;
+  max-width: 1400px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 #screen-bias-games .bias-card {
-  position: absolute;
-  width: 260px;
-  height: 160px;
-  min-height: 160px;
-  max-height: 160px;
+  position: relative;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: space-between;
+  text-align: center;
   box-sizing: border-box;
+  min-height: 200px;
+  background: rgba(8, 14, 40, 0.75);
+  border: 0.5px solid rgba(94, 160, 255, 0.25);
+  border-radius: 12px;
+  padding: 28px 20px 24px;
+  cursor: pointer;
   overflow: hidden;
   transform-origin: center center;
   transform-style: preserve-3d;
+  backface-visibility: hidden;
   pointer-events: auto;
-  transition:
-    box-shadow 240ms ease,
-    filter 240ms ease,
-    transform 240ms ease;
+  transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
 }
 
 #screen-bias-games .bias-card::before {
@@ -2560,11 +2598,12 @@ h2,
 }
 
 #screen-bias-games .bias-card:hover {
+  background: rgba(20, 40, 90, 0.85);
+  border-color: rgba(94, 160, 255, 0.6);
   box-shadow:
     0 24px 52px rgba(0, 0, 0, 0.42),
     inset 0 1px 0 rgba(255, 255, 255, 0.14),
     0 0 46px rgba(59, 130, 246, 0.48);
-  filter: brightness(1.07);
 }
 
 #screen-bias-games .task-card-top {
@@ -2587,6 +2626,21 @@ h2,
   position: relative;
   z-index: 5;
   pointer-events: auto;
+}
+
+#screen-bias-games .bias-id {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: rgba(130, 232, 255, 0.45);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+#screen-bias-games .bias-card.pos-left,
+#screen-bias-games .bias-card.pos-right {
+  border-color: rgba(94, 160, 255, 0.12);
+  background: rgba(8, 14, 44, 0.6);
 }
 
 #back-bias-games-btn.chamber-back-btn {
@@ -2631,24 +2685,23 @@ h2,
   }
 
   #screen-bias-games .bias-grid {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: auto;
-    gap: 14px;
     perspective: none;
+    gap: 14px;
+  }
+
+  #screen-bias-games .bias-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    width: 100%;
+    padding: 16px;
+    border-radius: 18px;
   }
 
   #screen-bias-games .bias-card,
-  #screen-bias-games .bias-card:nth-child(1),
-  #screen-bias-games .bias-card:nth-child(2),
-  #screen-bias-games .bias-card:nth-child(3),
-  #screen-bias-games .bias-card:nth-child(4),
-  #screen-bias-games .bias-card:nth-child(5),
-  #screen-bias-games .bias-card:nth-child(6) {
-    position: static;
-    left: auto;
-    top: auto;
+  #screen-bias-games .bias-card.pos-left,
+  #screen-bias-games .bias-card.pos-center,
+  #screen-bias-games .bias-card.pos-right {
     width: 100%;
     min-height: 156px;
     transform: none;
@@ -2718,15 +2771,25 @@ h2,
 }
 
 /* === INSTRUCTION VIDEO — FIX SIDE CROP === */
+#screen-instruction-video .panel {
+  width: min(95vw, 1400px);
+  max-width: 1400px;
+  padding-left: 40px;
+  padding-right: 40px;
+  margin: 0 auto;
+}
+
 #screen-instruction-video .video-shell {
-  width: min(94vw, 1600px);
+  width: 100%;
   height: auto;
   aspect-ratio: 16 / 9;
-  max-height: 72vh;
+  margin: 0 auto;
 }
 
 #screen-instruction-video .feature-video,
 #screen-instruction-video .video-shell video {
+  width: 100%;
+  height: auto;
   object-fit: contain;
   background: #000;
 }

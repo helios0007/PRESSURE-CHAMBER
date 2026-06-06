@@ -548,7 +548,7 @@ els.skipToSetupBtn.addEventListener("click", async () => {
 
 els.backInstructionChoiceBtn.addEventListener("click", () => {
   pauseAllVideos();
-  showScreen("start");
+  showScreen("instructionChoice");
 });
 
 els.replayInstructionBtn.addEventListener("click", async () => {
@@ -708,7 +708,7 @@ initBackgroundBlobs();
 const BIAS_GAMES = [
   {
     id: "bias_right",
-    title: "Right-Hand Bias",
+    title: "The Dominant Hand",
     instruction: "Write a prompt without assuming handedness.",
     bias: "Default Assumption Bias",
     mappedTaskId: 1,
@@ -718,7 +718,7 @@ const BIAS_GAMES = [
   },
   {
     id: "bias_gender",
-    title: "Gender Bias",
+    title: "The Glass Ceiling",
     instruction: "Write a prompt without assuming gender roles.",
     bias: "Misrepresentation Bias",
     mappedTaskId: 8,
@@ -728,7 +728,7 @@ const BIAS_GAMES = [
   },
   {
     id: "bias_language",
-    title: "Language Bias",
+    title: "The Aesthetic Override",
     instruction: "Write a prompt without assuming language or culture.",
     bias: "Cultural Misalignment Bias",
     mappedTaskId: 4,
@@ -738,7 +738,7 @@ const BIAS_GAMES = [
   },
   {
     id: "bias_architecture",
-    title: "Architecture Bias",
+    title: "The Default Couple",
     instruction: "Write a prompt that preserves local architectural detail.",
     bias: "Detail Loss Bias",
     mappedTaskId: 5,
@@ -748,7 +748,7 @@ const BIAS_GAMES = [
   },
   {
     id: "bias_authority",
-    title: "Authority Bias",
+    title: "The Expiry Date",
     instruction: "Write a prompt that does not over-focus on authority.",
     bias: "Focus Collapse Bias",
     mappedTaskId: 7,
@@ -758,7 +758,7 @@ const BIAS_GAMES = [
   },
   {
     id: "bias_friction",
-    title: "Frictionless World Bias",
+    title: "Coming Soon",
     instruction: "Write a prompt that keeps complexity, friction, and context.",
     bias: "Flattening Bias",
     mappedTaskId: 10,
@@ -896,22 +896,36 @@ function loadBiasGames() {
 function renderBiasGames() {
   if (!els.biasGamesGrid) return;
 
+  const posClasses = ["pos-left", "pos-center", "pos-right"];
   els.biasGamesGrid.innerHTML = "";
-  BIAS_GAMES.forEach((game, index) => {
-    const card = document.createElement("article");
-    card.className = "card bias-card";
-    card.dataset.biasIndex = index;
-    card.innerHTML = `
-      <div class="task-card-top">
-        <div class="task-meta">
-          <h3>${t("challengePrefix")} ${index + 1}</h3>
-          <p class="task-category">${t("challengeInstruction")}</p>
+
+  for (let rowStart = 0; rowStart < BIAS_GAMES.length; rowStart += 3) {
+    const row = document.createElement("div");
+    row.className = "bias-row";
+
+    for (let col = 0; col < 3; col++) {
+      const index = rowStart + col;
+      if (index >= BIAS_GAMES.length) break;
+      const game = BIAS_GAMES[index];
+
+      const card = document.createElement("article");
+      card.className = `bias-card ${posClasses[col]}`;
+      card.dataset.biasIndex = index;
+      card.innerHTML = `
+        <div class="task-card-top">
+          <div class="task-meta">
+            <span class="bias-id">Bias 0${index + 1}</span>
+            <h3>${game.title}</h3>
+            <p class="task-category">${t("challengeInstruction")}</p>
+          </div>
         </div>
-      </div>
-      <button class="button btn primary-btn" type="button">${t("playBtn")}</button>
-    `;
-    els.biasGamesGrid.appendChild(card);
-  });
+        <button class="button btn primary-btn" type="button">${t("playBtn")}</button>
+      `;
+      row.appendChild(card);
+    }
+
+    els.biasGamesGrid.appendChild(row);
+  }
 }
 
 function initBiasCardDelegation() {
@@ -1014,8 +1028,8 @@ function init3DScene() {
   renderer.domElement.style.left = '0';
   renderer.domElement.style.zIndex = '-1';
   renderer.domElement.style.pointerEvents = 'none';
-  document.body.style.backgroundColor = '#00050e';
-  document.body.style.backgroundImage = 'radial-gradient(circle at 40% 30%, rgba(59,130,246,0.18), transparent 16%), radial-gradient(circle at 60% 55%, rgba(99,102,241,0.12), transparent 12%), radial-gradient(circle at 50% 70%, rgba(15,23,42,0.28), transparent 22%), radial-gradient(circle at 15% 25%, rgba(0, 0, 0, 0.32), transparent 18%)';
+  // document.body.style.backgroundColor = '#00050e';
+  // document.body.style.backgroundImage = 'radial-gradient(circle at 40% 30%, rgba(59,130,246,0.18), transparent 16%), radial-gradient(circle at 60% 55%, rgba(99,102,241,0.12), transparent 12%), radial-gradient(circle at 50% 70%, rgba(15,23,42,0.28), transparent 22%), radial-gradient(circle at 15% 25%, rgba(0, 0, 0, 0.32), transparent 18%)';
   document.body.style.backgroundRepeat = 'no-repeat';
   document.body.style.backgroundSize = 'cover';
   document.body.style.overflow = 'hidden';
@@ -1278,7 +1292,7 @@ function initBiasGamesParallax() {
 }
 
 // Initialize 3D scene when DOM is ready
-document.addEventListener('DOMContentLoaded', init3DScene);
+// document.addEventListener('DOMContentLoaded', init3DScene);
 document.addEventListener("DOMContentLoaded", initBiasGamesParallax);
 // === 3D CINEMATIC BACKGROUND SYSTEM END ===
 
