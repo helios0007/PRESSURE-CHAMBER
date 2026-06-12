@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=BiasGame Kiosk
+Exec=/home/pi/start_kiosk.sh

@@ -736,7 +736,7 @@ body {
   display: flex;
   gap: 40px;
   width: 100%;
-  height: 60%;
+  max-height: 38vh;
 }
 
 .result-left,
@@ -749,14 +749,14 @@ body {
 
 .result-left img {
   width: 100%;
-  height: 100%;
+  max-height: 38vh;
   object-fit: contain;
   background: #0a0f1f;
 }
 
 .generated-placeholder {
   width: 100%;
-  height: 100%;
+  max-height: 38vh;
   background: #000;
   border-radius: 12px;
   overflow: hidden;
@@ -1085,6 +1085,17 @@ textarea:focus-visible {
 #screen-bias-play .panel,
 #screen-result .panel {
   background: rgba(5, 9, 20, 0.58);
+}
+
+#screen-result .panel {
+  height: auto;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+#screen-result p {
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 @keyframes cinemaFade {

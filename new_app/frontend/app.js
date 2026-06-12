@@ -6,6 +6,9 @@
   completedTasks: [],
   scores: {},
   currentTask: null,
+  currentBiasGame: null,
+  biasGames: [],
+  biasModeActive: false,
   total: 0,
 };
 
@@ -80,6 +83,7 @@ const els = {
 };
 
 let currentGenerateController = null;
+let biasGameTransitionTimer = null;
 let biasExplanationData = {};
 
 async function loadBiasExplanations() {
@@ -94,10 +98,6 @@ async function loadBiasExplanations() {
 // === BIAS PLAYGROUND ADDITION START ===
 const PLACEHOLDER_IMAGE = "/images/placeholder.png";
 const BIAS_DATA_PATH = "/data/tasks_2.json";
-
-appState.biasGames = [];
-appState.currentBiasGame = null;
-appState.biasModeActive = false;
 
 async function loadBiasGames() {
   try {
@@ -189,6 +189,8 @@ function initializeBiasPlayground() {
     showScreen("biasGames");
   });
 
+  // NOTE: showScreen("hub") here is intentional for backBiasGamesBtn only.
+  // NEVER use showScreen("hub") or renderTaskHub() from screen-result's back button — see backHubBtn handler.
   els.backBiasGamesBtn?.addEventListener("click", () => {
     showScreen("hub");
   });
@@ -204,6 +206,16 @@ function showScreen(name) {
     if (screen) screen.classList.remove("active");
   });
   if (screens[name]) screens[name].classList.add("active");
+
+  if (name === "introVideo" && els.introVideo) {
+    els.introVideo.currentTime = 0;
+    els.introVideo.load();
+    els.introVideo.play().catch(() => {});
+  } else if (name === "instructionVideo" && els.instructionVideo) {
+    els.instructionVideo.currentTime = 0;
+    els.instructionVideo.load();
+    els.instructionVideo.play().catch(() => {});
+  }
 }
 
 function showLoading(active) {
@@ -304,6 +316,8 @@ function applyScoreColor(score) {
 }
 
 async function submitPrompt() {
+  // NOTE: showScreen("hub") here is a guard for missing task state only.
+  // NEVER use showScreen("hub") or renderTaskHub() from screen-result's back button — see backHubBtn handler.
   if (!appState.currentTask) {
     showScreen("hub");
     return;
@@ -489,6 +503,11 @@ async function enterBiasChamber() {
 function resetApp() {
   if (currentGenerateController) currentGenerateController.abort();
   pauseAllVideos();
+  document.querySelectorAll("video").forEach((v) => {
+    v.currentTime = 0;
+    v.load();
+    v.pause();
+  });
 
   appState.userName = "";
   appState.language = "en";
@@ -496,6 +515,9 @@ function resetApp() {
   appState.completedTasks = [];
   appState.scores = {};
   appState.currentTask = null;
+  appState.currentBiasGame = null;
+  appState.biasGames = [];
+  appState.biasModeActive = false;
   appState.total = 0;
 
   els.username.value = "";
@@ -503,7 +525,7 @@ function resetApp() {
   applyTranslations();
   document.querySelectorAll(".lang-btn").forEach((btn) => btn.classList.remove("is-selected"));
   updateLangSwitcher();
-  showScreen("language");
+  showScreen("introVideo");
 }
 
 els.startBtn.addEventListener("click", async () => {
@@ -594,14 +616,24 @@ els.promptInput.addEventListener("keydown", (e) => {
 
 els.generateBtn.addEventListener("click", submitPrompt);
 
+// ============================================================
+// PERMANENT FIX — DO NOT MODIFY THIS HANDLER
+// "Back to Task Hub" must ALWAYS navigate to screen-biasGames
+// with cleared task state. Never route to screen-hub or any
+// intermediate screen. Never add renderTaskHub() here.
+// Last fixed: 2026-06-09
+// ============================================================
 els.backHubBtn.addEventListener("click", () => {
   if (appState.completedTasks.length >= 3) {
     showFinal();
     return;
   }
-  renderTaskHub();
-  showScreen("hub");
+  clearTimeout(biasGameTransitionTimer);
+  appState.currentBiasGame = null;
+  appState.currentTask = null;
+  showScreen("biasGames");
 });
+// ============================================================
 
 els.viewLeaderboardBtn.addEventListener("click", async () => {
   await loadLeaderboard();
@@ -946,6 +978,10 @@ function initBiasCardDelegation() {
   document.addEventListener("click", (e) => {
     const screen = document.getElementById("screen-bias-games");
     if (!screen?.classList.contains("active")) return;
+    // Bail if the click originated outside screen-bias-games — e.g. a button on another
+    // screen called showScreen("biasGames") mid-bubble, making this screen active before
+    // this listener fires. Without this guard that click would also trigger a card open.
+    if (!screen.contains(e.target)) return;
     const cards = els.biasGamesGrid.querySelectorAll(".bias-card");
     for (const card of cards) {
       const rect = card.getBoundingClientRect();
@@ -993,7 +1029,8 @@ async function openBiasGame(game, index) {
   previewImg.src = BIAS_PREVIEW_IMAGES[index];
   preview.style.opacity = "1";
   preview.style.display = "block";
-  setTimeout(() => {
+  clearTimeout(biasGameTransitionTimer);
+  biasGameTransitionTimer = setTimeout(() => {
     preview.style.transition = "opacity 800ms ease";
     preview.style.opacity = "0";
     showScreen("prompt");
@@ -1294,6 +1331,22 @@ function initBiasGamesParallax() {
 // Initialize 3D scene when DOM is ready
 // document.addEventListener('DOMContentLoaded', init3DScene);
 document.addEventListener("DOMContentLoaded", initBiasGamesParallax);
+
+// On every hard page load, set identical clean state to resetApp() and show
+// the intro screen — ensures first journey matches every subsequent reset.
+document.addEventListener("DOMContentLoaded", () => {
+  appState.userName = "";
+  appState.language = "en";
+  appState.tasks = [];
+  appState.completedTasks = [];
+  appState.scores = {};
+  appState.currentTask = null;
+  appState.currentBiasGame = null;
+  appState.biasGames = [];
+  appState.biasModeActive = false;
+  appState.total = 0;
+  showScreen("introVideo");
+});
 // === 3D CINEMATIC BACKGROUND SYSTEM END ===
 
 // === SCREENSAVER / INACTIVITY SYSTEM ===

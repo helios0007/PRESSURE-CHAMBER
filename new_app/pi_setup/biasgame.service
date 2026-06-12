@@ -1,0 +1,12 @@
+[Unit]
+Description=Bias Game Flask App
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/pressure-chamber/new_app/backend/app.py
+WorkingDirectory=/home/pi/pressure-chamber/new_app/backend
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
