@@ -8,6 +8,10 @@ from flask import Flask, jsonify, request, send_from_directory
 from similarity import calculate_similarity_score
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+# Prefer the built React app (react-app/dist) when present; otherwise fall back
+# to the original static frontend so both keep working.
+REACT_DIST = BASE_DIR / "react-app" / "dist"
+FRONTEND_DIR = REACT_DIST if (REACT_DIST / "index.html").exists() else (BASE_DIR / "frontend")
 DATA_DIR = BASE_DIR / "data"
 TASKS_PATH = DATA_DIR / "tasks.json"
 TASKS_2_PATH = DATA_DIR / "tasks_2.json"
@@ -89,13 +93,18 @@ def log_prompt(task_id, prompt: str):
 
 @app.route("/", methods=["GET"])
 def index():
-    return send_from_directory(BASE_DIR / "frontend", "index.html")
+    return send_from_directory(FRONTEND_DIR, "index.html")
 
 
 @app.route("/<path:filename>", methods=["GET"])
 def frontend_files(filename):
-    frontend_file = BASE_DIR / "frontend" / filename
+    frontend_file = FRONTEND_DIR / filename
     if frontend_file.exists():
+        return send_from_directory(FRONTEND_DIR, filename)
+
+    # Media still lives in the original static frontend folder.
+    legacy_file = BASE_DIR / "frontend" / filename
+    if legacy_file.exists():
         return send_from_directory(BASE_DIR / "frontend", filename)
 
     workspace_file = BASE_DIR / filename
