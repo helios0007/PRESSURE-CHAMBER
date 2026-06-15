@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/start", "destination": "/api/start" },
+    { "source": "/generate", "destination": "/api/generate" },
+    { "source": "/leaderboard", "destination": "/api/leaderboard" }
+  ],
+  "functions": {
+    "api/*.py": { "includeFiles": "api/_data/**" }
+  }
+}

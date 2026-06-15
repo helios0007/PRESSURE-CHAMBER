@@ -1,3 +1,13 @@
 node_modules
 dist
 *.local
+
+# Static assets copied from sibling folders at build time (see
+# scripts/copy-static-assets.mjs) — not committed, regenerated on each build.
+public/data
+public/images
+public/media
+public/backend
+
+# Vercel
+.vercel

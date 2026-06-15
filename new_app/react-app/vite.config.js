@@ -16,7 +16,7 @@ const backendProxyPaths = [
 ];
 
 export default defineConfig({
-  base: "./",
+  base: "/",
   plugins: [react()],
   server: {
     port: 5173,
