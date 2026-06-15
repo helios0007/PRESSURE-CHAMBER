@@ -1,0 +1,3 @@
+# The Vercel serverless functions in api/ use only the Python standard library.
+# This empty manifest keeps Vercel from walking up the tree and installing the
+# heavy backend requirements (torch/transformers/etc.) for the API functions.
